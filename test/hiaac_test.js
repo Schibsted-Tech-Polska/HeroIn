@@ -16,6 +16,7 @@ describe('hiaac', function () {
     var heroku_client = {
       app_spec: [],
       config_vars_spec: [],
+      addon_spec: [],
       apps: function () {
         return {
           create: function (app_spec) {
@@ -29,6 +30,14 @@ describe('hiaac', function () {
                 return Promise.resolve(config_vars_spec);
               }
             }
+          },
+          addons: function() {
+            return {
+              create: function(addon_spec) {
+                heroku_client.addon_spec.push(addon_spec);
+                return Promise.resolve(addon_spec);
+              }
+            }
           }
         }
       }
@@ -39,12 +48,21 @@ describe('hiaac', function () {
       name: 'sample_heroku_app',
       region: 'eu',
       config_vars: {
-        NODE_ENV: "production"
+        NODE_ENV: 'production'
+      },
+      addons: {
+        logentries: {
+          plan: 'logentries:le_tryit'
+        },
+        librato: {
+          plan: 'librato:development'
+        }
       }
     };
     configurator(simple_app_configuration).then(function () {
       assert.deepEqual(heroku_client.app_spec, [{name: 'sample_heroku_app', region: 'eu'}]);
-      assert.deepEqual(heroku_client.config_vars_spec, [{NODE_ENV: "production"}]);
+      assert.deepEqual(heroku_client.config_vars_spec, [{NODE_ENV: 'production'}]);
+      assert.deepEqual(heroku_client.addon_spec, [{plan: 'logentries:le_tryit'}, {plan: 'librato:development'}]);
       done();
     }).catch(function(err) {
       done(err);
