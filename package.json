@@ -1,0 +1,23 @@
+{
+  "name": "hiaac",
+  "version": "1.0.0",
+  "description": "Heroku Infrastructure As A Code",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha --recursive"
+  },
+  "keywords": [
+    "heroku",
+    "infrastructure",
+    "provisioning"
+  ],
+  "author": "Mateusz Kwasniewski <mateusz.kwasniewski@schibsted.pl>",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "2.3.2",
+    "chai": "3.2.0"
+  },
+  "dependencies": {
+    "heroku-client": "2.1.0"
+  }
+}
