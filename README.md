@@ -33,4 +33,5 @@ TODO:
 - support adding/removing/updating addons 
 - export existing config 
 - setup travis ci build 
-- record heroku answers and run them off the stub server
+- record heroku answers and run them off the stub server 
+- create integration test that runs agains real heroku
