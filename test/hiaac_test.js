@@ -6,15 +6,12 @@ function stub_heroku_client() {
   var heroku_client = {
     app_spec: '',
     config_vars_spec: '',
-    addon_spec: [],
+    addon_spec: {},
     name: '',
     apps: function (name) {
-      //if(name && name !== this.name) {
-      //  throw new Error('nonexistent app');
-      //}
       return {
         create: function (app_spec) {
-          if(heroku_client.name) {
+          if (heroku_client.name) {
             return Promise.reject('app already created');
           }
           heroku_client.name = app_spec.name;
@@ -25,14 +22,14 @@ function stub_heroku_client() {
           heroku_client.app_spec = app_spec;
           return Promise.resolve(app_spec);
         },
-        info: function() {
-          if(heroku_client.name === name) {
+        info: function () {
+          if (heroku_client.name === name) {
             return Promise.resolve(name);
           } else {
             return Promise.reject(name);
           }
         },
-        delete: function() {
+        delete: function () {
           return Promise.resolve(name);
         },
         configVars: function () {
@@ -43,11 +40,26 @@ function stub_heroku_client() {
             }
           };
         },
-        addons: function () {
+        addons: function (name) {
           return {
             create: function (addon_spec) {
-              heroku_client.addon_spec.push(addon_spec);
+              var addon_name = addon_spec.plan.split(':')[0];
+              heroku_client.addon_spec[addon_name] = addon_spec;
               return Promise.resolve(addon_spec);
+            },
+            update: function (addon_spec) {
+              if(!heroku_client.addon_spec[name]) {
+                return Promise.reject('cannot update nonexistent addon');
+              }
+              heroku_client.addon_spec[name] = addon_spec;
+              return Promise.resolve(addon_spec);
+            },
+            info: function () {
+              if(heroku_client.addon_spec[name]) {
+                return Promise.resolve(name);
+              } else {
+                return Promise.reject('cannot get info for nonexistent addon');
+              }
             }
           };
         }
@@ -70,8 +82,8 @@ describe('hiaac', function () {
     var heroku_client = stub_heroku_client();
     var configurator = hiaac(heroku_client);
 
-    configurator({name: 'sample_heroku_app'}).then(function() {
-      configurator.delete('sample_heroku_app').then(function(name) {
+    configurator({name: 'sample_heroku_app'}).then(function () {
+      configurator.delete('sample_heroku_app').then(function (name) {
         assert.equal(name, 'sample_heroku_app');
         done();
       }).catch(done);
@@ -82,7 +94,7 @@ describe('hiaac', function () {
     var heroku_client = stub_heroku_client();
 
     var configurator = hiaac(heroku_client);
-    var simple_app_configuration = {
+    var app_configuration = {
       name: 'sample_heroku_app',
       region: 'eu',
       ignore_me: 'to_be_ignored',
@@ -98,19 +110,22 @@ describe('hiaac', function () {
         }
       }
     };
-    configurator(simple_app_configuration).then(function () {
+    configurator(app_configuration).then(function () {
       assert.deepEqual(heroku_client.app_spec, {name: 'sample_heroku_app', region: 'eu'});
       assert.deepEqual(heroku_client.config_vars_spec, {NODE_ENV: 'production'});
-      assert.deepEqual(heroku_client.addon_spec, [{plan: 'logentries:le_tryit'}, {plan: 'librato:development'}]);
+      assert.deepEqual(heroku_client.addon_spec, {
+        logentries: {plan: 'logentries:le_tryit'},
+        librato: {plan: 'librato:development'}
+      });
       done();
     }).catch(done);
   });
 
-  it('should update existing heroku app', function (done) {
+  it('should update basic app info', function (done) {
     var heroku_client = stub_heroku_client();
 
     var configurator = hiaac(heroku_client);
-    var simple_app_configuration = {
+    var app_configuration = {
       name: 'sample_heroku_app',
       region: 'eu',
     };
@@ -120,9 +135,9 @@ describe('hiaac', function () {
       maintenance: true,
       build_stack: 'cedar-14'
     };
-    configurator(simple_app_configuration).then(function () {
+    configurator(app_configuration).then(function () {
       return configurator(updated_app_configuration);
-    }).then(function() {
+    }).then(function () {
       assert.deepEqual(heroku_client.app_spec, {name: 'sample_heroku_app', maintenance: true, build_stack: 'cedar-14'});
       done();
     }).catch(done);
@@ -132,13 +147,13 @@ describe('hiaac', function () {
     var heroku_client = stub_heroku_client();
 
     var configurator = hiaac(heroku_client);
-    var simple_app_configuration = {
+    var app_configuration = {
       name: 'sample_heroku_app',
       config_vars: {
         FEATURE_TOGGLE_A: 'A'
       }
     };
-    var updates_app_configuration = {
+    var updated_app_configuration = {
       name: 'sample_heroku_app',
       config_vars: {
         FEATURE_TOGGLE_A: null,
@@ -146,12 +161,71 @@ describe('hiaac', function () {
       }
     };
 
-    configurator(simple_app_configuration).then(function() {
-      return configurator(updates_app_configuration);
-    }).then(function() {
+    configurator(app_configuration).then(function () {
+      return configurator(updated_app_configuration);
+    }).then(function () {
       assert.deepEqual(heroku_client.config_vars_spec, {FEATURE_TOGGLE_A: null, FEATURE_TOGGLE_B: 'B'});
       done();
     }).catch(done);
   });
+
+  it('should update addons pricing option', function (done) {
+    var heroku_client = stub_heroku_client();
+
+    var configurator = hiaac(heroku_client);
+    var app_configuration = {
+      name: 'sample_heroku_app',
+      addons: {
+        logentries: {
+          plan: 'logentries:le_tryit'
+        }
+      }
+    };
+
+    var updated_app_configuration = {
+      name: 'sample_heroku_app',
+      addons: {
+        logentries: {
+          plan: 'logentries:le_entry'
+        }
+      }
+    };
+
+    configurator(app_configuration).then(function () {
+      return configurator(updated_app_configuration);
+    }).then(function () {
+      assert.deepEqual(heroku_client.addon_spec, {logentries: {plan: 'logentries:le_entry'}});
+      done();
+    }).catch(done);
+  });
+
+  it('should add a new addon when updating', function(done) {
+    var heroku_client = stub_heroku_client();
+
+    var configurator = hiaac(heroku_client);
+    var app_configuration = {
+      name: 'sample_heroku_app'
+    };
+
+    var updated_app_configuration = {
+      name: 'sample_heroku_app',
+      addons: {
+        logentries: {
+          plan: 'logentries:le_tryit'
+        },
+        librato: {
+          plan: 'librato:development'
+        }
+      }
+    };
+
+    configurator(app_configuration).then(function () {
+      return configurator(updated_app_configuration);
+    }).then(function () {
+      assert.deepEqual(heroku_client.addon_spec, {logentries: {plan: 'logentries:le_tryit'}, librato: {plan: 'librato:development'}});
+      done();
+    }).catch(done);
+  });
+
 
 });
