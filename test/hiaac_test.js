@@ -128,4 +128,30 @@ describe('hiaac', function () {
     }).catch(done);
   });
 
+  it('should update config vars', function (done) {
+    var heroku_client = stub_heroku_client();
+
+    var configurator = hiaac(heroku_client);
+    var simple_app_configuration = {
+      name: 'sample_heroku_app',
+      config_vars: {
+        FEATURE_TOGGLE_A: 'A'
+      }
+    };
+    var updates_app_configuration = {
+      name: 'sample_heroku_app',
+      config_vars: {
+        FEATURE_TOGGLE_A: null,
+        FEATURE_TOGGLE_B: 'B'
+      }
+    };
+
+    configurator(simple_app_configuration).then(function() {
+      return configurator(updates_app_configuration);
+    }).then(function() {
+      assert.deepEqual(heroku_client.config_vars_spec, {FEATURE_TOGGLE_A: null, FEATURE_TOGGLE_B: 'B'});
+      done();
+    }).catch(done);
+  });
+
 });
