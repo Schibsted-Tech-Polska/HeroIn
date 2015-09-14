@@ -85,6 +85,7 @@ describe('hiaac', function () {
     var simple_app_configuration = {
       name: 'sample_heroku_app',
       region: 'eu',
+      ignore_me: 'to_be_ignored',
       config_vars: {
         NODE_ENV: 'production'
       },
