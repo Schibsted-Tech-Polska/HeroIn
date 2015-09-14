@@ -31,4 +31,5 @@ TODO:
 - perf improvement - don't update when value doesn't change e.g. addon upgrade
 - remove duplication from tests
 - support adding/removing/updating addons 
-- export existing config
+- export existing config 
+- setup travis ci build
