@@ -14,9 +14,11 @@ describe('hiaac', function () {
 
   it('should create simple heroku app', function (done) {
     var heroku_client = {
+      create_invocations: [],
       apps: function () {
         return {
           create: function (app_spec) {
+            heroku_client.create_invocations.push(app_spec);
             return Promise.resolve(app_spec);
           }
         }
@@ -24,12 +26,17 @@ describe('hiaac', function () {
     };
     var configurator = hiaac(heroku_client);
     var simple_app_configuration = {
-      'name': 'sample_heroku_app',
-      'region:name': 'eu'
+      name: 'sample_heroku_app',
+      'region:name': 'eu',
+      config_vars: {
+        NODE_ENV: "production"
+      }
     };
-    configurator(simple_app_configuration).then(function (app_created) {
-      assert.deepEqual(app_created, simple_app_configuration);
+    configurator(simple_app_configuration).then(function () {
+      assert.deepEqual(heroku_client.create_invocations, [{name: 'sample_heroku_app', 'region:name': 'eu'}]);
       done();
+    }).catch(function(err) {
+      done(err);
     });
   });
 
