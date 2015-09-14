@@ -32,4 +32,5 @@ TODO:
 - remove duplication from tests
 - support adding/removing/updating addons 
 - export existing config 
-- setup travis ci build
+- setup travis ci build 
+- record heroku answers and run them off the stub server
