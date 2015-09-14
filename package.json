@@ -14,8 +14,9 @@
   "author": "Mateusz Kwasniewski <mateusz.kwasniewski@schibsted.pl>",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "2.3.2",
-    "chai": "3.2.0"
+    "chai": "3.2.0",
+    "jshint": "^2.8.0",
+    "mocha": "2.3.2"
   },
   "dependencies": {
     "heroku-client": "2.1.0",

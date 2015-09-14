@@ -41,7 +41,7 @@ function stub_heroku_client() {
               heroku_client.config_vars_spec = config_vars_spec;
               return Promise.resolve(config_vars_spec);
             }
-          }
+          };
         },
         addons: function () {
           return {
@@ -49,9 +49,9 @@ function stub_heroku_client() {
               heroku_client.addon_spec.push(addon_spec);
               return Promise.resolve(addon_spec);
             }
-          }
+          };
         }
-      }
+      };
     }
   };
   return heroku_client;
