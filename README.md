@@ -42,3 +42,4 @@ TODO:
 - remove duplication from tests
 - split lib code into smaller files (app, addons, collaborators etc.)
 - stack (create) vs build_stack (update)
+- deal with 201 addonc reated
