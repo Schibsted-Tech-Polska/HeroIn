@@ -34,4 +34,8 @@ TODO:
 - export existing config 
 - setup travis ci build 
 - record heroku answers and run them off the stub server 
-- create integration test that runs agains real heroku
+- create integration test that runs agains real heroku 
+- inheritance of props
+- heroku labs support: zero downtime, memory stats gathering
+- pipelines support
+- same tests should run in memory and against real heroku
