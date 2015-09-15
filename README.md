@@ -28,7 +28,6 @@ TODO:
 - custom extensions for addons: logentries alerts
 - custom extensions for addons: heroku redis connection idle time
 - support for log drain
-- support for collaborators
 - better logging about what is happening under the hood
 - advanced addon management - delete old addon when can't be upgraded but prompt a user. delete addons with null setter.
 - perf improvement - don't update when value doesn't change e.g. addon upgrade
@@ -43,4 +42,3 @@ TODO:
 - split lib code into smaller files (app, addons, collaborators etc.)
 - stack (create) vs build_stack (update)
 - deal with 201 addonc reated
-- collaborators: API list. delete not listen in config. create only delta.  

@@ -87,6 +87,33 @@ describe('hiaac', function () {
     }).catch(done);
   });
 
+  it('should manage collaborators', function (done) {
+    var heroku_client = setup_heroku_client();
+    var configurator = hiaac(heroku_client);
+    this.timeout(10000);
+
+    var app_configuration = {
+      name: 'sample-hiaac-heroku-app',
+      collaborators: ['miroslaw.kucharzyk@schibsted.pl', 'kwasniewski.mateusz@gmail.com']
+    };
+    var updated_configuration = {
+      name: 'sample-hiaac-heroku-app',
+      collaborators: ['krystian.jarmicki@schibsted.pl', 'kwasniewski.mateusz@gmail.com']
+    };
+
+    configurator(app_configuration).then(function() {
+      return configurator(updated_configuration);
+    }).then(function() {
+      return configurator.export(app_configuration.name);
+    }).then(function(result) {
+      assert.include(result.collaborators, 'krystian.jarmicki@schibsted.pl');
+      assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
+      assert.notInclude(result.collaborators, 'miroslaw.kucharzyk@schibsted.pl');
+      done();
+    }).catch(done);
+
+  });
+
   it('should update basic app info', function (done) {
     var heroku_client = setup_heroku_client();
     var configurator = hiaac(heroku_client);
