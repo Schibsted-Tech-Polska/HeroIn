@@ -30,7 +30,7 @@ TODO:
 - support for log drain
 - support for collaborators
 - better logging about what is happening under the hood
-- advanced addon management - delete old addon when can't be upgraded but prompt a user
+- advanced addon management - delete old addon when can't be upgraded but prompt a user. delete addons with null setter.
 - perf improvement - don't update when value doesn't change e.g. addon upgrade
 - remove duplication from tests
 - support adding/removing/updating addons 
