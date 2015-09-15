@@ -20,6 +20,8 @@ Gotchas:
 
 
 TODO:
+- export existing config 
+- same tests should run in memory and against real heroku
 - proper env management: remove everything that's not explicitly listed or comes from addon (config_vars in addon info)
 - check name specified precondition
 - custom extensions for addons: logentries alerts
@@ -31,11 +33,11 @@ TODO:
 - perf improvement - don't update when value doesn't change e.g. addon upgrade
 - remove duplication from tests
 - support adding/removing/updating addons 
-- export existing config 
 - setup travis ci build 
 - record heroku answers and run them off the stub server 
 - create integration test that runs agains real heroku 
 - inheritance of props
 - heroku labs support: zero downtime, memory stats gathering
 - pipelines support
-- same tests should run in memory and against real heroku
+- remove duplication from tests
+- split lib code into smaller files (app, addons, collaborators etc.)

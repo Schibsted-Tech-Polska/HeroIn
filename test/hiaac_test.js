@@ -1,6 +1,7 @@
 var chai = require('chai'),
   assert = chai.assert,
   hiaac = require('../lib/hiaac');
+var Heroku = require('heroku-client');
 
 function stub_heroku_client() {
   var heroku_client = {
@@ -26,11 +27,16 @@ function stub_heroku_client() {
           if (heroku_client.name === name) {
             return Promise.resolve(name);
           } else {
-            return Promise.reject(name);
+            return Promise.reject('app does not exist');
           }
         },
         delete: function () {
-          return Promise.resolve(name);
+          if(heroku_client.name === '') {
+            return Promise.reject();
+          } else {
+            heroku_client.name = '';
+            return Promise.resolve();
+          }
         },
         configVars: function () {
           return {
@@ -66,9 +72,22 @@ function stub_heroku_client() {
       };
     }
   };
+
+  //return new Heroku({token: process.env.HEROKU_API_TOKEN});
   return heroku_client;
 }
+
 describe('hiaac', function () {
+
+  beforeEach(function(done) {
+    var heroku_client = stub_heroku_client();
+    var configurator = hiaac(heroku_client);
+
+    configurator.delete('sample-hiaac-heroku-app').then(done).catch(function() {
+      done();
+    });
+  });
+
   it('should prompt you for an API key', function () {
     try {
       var configurator = hiaac();
@@ -82,11 +101,13 @@ describe('hiaac', function () {
     var heroku_client = stub_heroku_client();
     var configurator = hiaac(heroku_client);
 
-    configurator({name: 'sample_heroku_app'}).then(function () {
-      configurator.delete('sample_heroku_app').then(function (name) {
-        assert.equal(name, 'sample_heroku_app');
-        done();
-      }).catch(done);
+    configurator({name: 'sample-hiaac-heroku-app'}).then(function () {
+      configurator.delete('sample-hiaac-heroku-app').then(function () {
+        configurator.info('sample-hiaac-heroku-app').catch(function(msg) {
+          assert.equal(msg, 'app does not exist');
+          done();
+        });
+      });
     });
   });
 
@@ -95,7 +116,7 @@ describe('hiaac', function () {
 
     var configurator = hiaac(heroku_client);
     var app_configuration = {
-      name: 'sample_heroku_app',
+      name: 'sample-hiaac-heroku-app',
       region: 'eu',
       ignore_me: 'to_be_ignored',
       config_vars: {
@@ -111,7 +132,7 @@ describe('hiaac', function () {
       }
     };
     configurator(app_configuration).then(function () {
-      assert.deepEqual(heroku_client.app_spec, {name: 'sample_heroku_app', region: 'eu'});
+      assert.deepEqual(heroku_client.app_spec, {name: 'sample-hiaac-heroku-app', region: 'eu'});
       assert.deepEqual(heroku_client.config_vars_spec, {NODE_ENV: 'production'});
       assert.deepEqual(heroku_client.addon_spec, {
         logentries: {plan: 'logentries:le_tryit'},
@@ -126,11 +147,11 @@ describe('hiaac', function () {
 
     var configurator = hiaac(heroku_client);
     var app_configuration = {
-      name: 'sample_heroku_app',
-      region: 'eu',
+      name: 'sample-hiaac-heroku-app',
+      region: 'eu'
     };
     var updated_app_configuration = {
-      name: 'sample_heroku_app',
+      name: 'sample-hiaac-heroku-app',
       region: 'us', // this one should be filtered out
       maintenance: true,
       build_stack: 'cedar-14'
@@ -138,7 +159,7 @@ describe('hiaac', function () {
     configurator(app_configuration).then(function () {
       return configurator(updated_app_configuration);
     }).then(function () {
-      assert.deepEqual(heroku_client.app_spec, {name: 'sample_heroku_app', maintenance: true, build_stack: 'cedar-14'});
+      assert.deepEqual(heroku_client.app_spec, {name: 'sample-hiaac-heroku-app', maintenance: true, build_stack: 'cedar-14'});
       done();
     }).catch(done);
   });
@@ -148,13 +169,13 @@ describe('hiaac', function () {
 
     var configurator = hiaac(heroku_client);
     var app_configuration = {
-      name: 'sample_heroku_app',
+      name: 'sample-hiaac-heroku-app',
       config_vars: {
         FEATURE_TOGGLE_A: 'A'
       }
     };
     var updated_app_configuration = {
-      name: 'sample_heroku_app',
+      name: 'sample-hiaac-heroku-app',
       config_vars: {
         FEATURE_TOGGLE_A: null,
         FEATURE_TOGGLE_B: 'B'
@@ -174,7 +195,7 @@ describe('hiaac', function () {
 
     var configurator = hiaac(heroku_client);
     var app_configuration = {
-      name: 'sample_heroku_app',
+      name: 'sample-hiaac-heroku-app',
       addons: {
         logentries: {
           plan: 'logentries:le_tryit'
@@ -183,7 +204,7 @@ describe('hiaac', function () {
     };
 
     var updated_app_configuration = {
-      name: 'sample_heroku_app',
+      name: 'sample-hiaac-heroku-app',
       addons: {
         logentries: {
           plan: 'logentries:le_entry'
@@ -204,11 +225,11 @@ describe('hiaac', function () {
 
     var configurator = hiaac(heroku_client);
     var app_configuration = {
-      name: 'sample_heroku_app'
+      name: 'sample-hiaac-heroku-app'
     };
 
     var updated_app_configuration = {
-      name: 'sample_heroku_app',
+      name: 'sample-hiaac-heroku-app',
       addons: {
         logentries: {
           plan: 'logentries:le_tryit'
