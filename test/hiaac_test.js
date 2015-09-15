@@ -4,7 +4,7 @@ var chai = require('chai'),
 var Heroku = require('heroku-client');
 
 function setup_heroku_client() {
-  return new Heroku({token: process.env.HEROKU_API_TOKEN});
+  return new Heroku({token: process.env.HEROKU_API_TOKEN, debug: true});
 }
 
 describe('hiaac', function () {
@@ -53,7 +53,7 @@ describe('hiaac', function () {
   it('should create heroku app', function (done) {
     var heroku_client = setup_heroku_client();
     var configurator = hiaac(heroku_client);
-    this.timeout(10000);
+    this.timeout(15000);
 
     var app_configuration = {
       name: 'sample-hiaac-heroku-app',
@@ -141,9 +141,10 @@ describe('hiaac', function () {
   });
 
   //it('should update addons pricing option', function (done) {
-  //  var heroku_client = stub_heroku_client();
-  //
+  //  var heroku_client = setup_heroku_client();
   //  var configurator = hiaac(heroku_client);
+  //  this.timeout(10000);
+  //
   //  var app_configuration = {
   //    name: 'sample-hiaac-heroku-app',
   //    addons: {
@@ -164,16 +165,20 @@ describe('hiaac', function () {
   //
   //  configurator(app_configuration).then(function () {
   //    return configurator(updated_app_configuration);
-  //  }).then(function () {
-  //    assert.deepEqual(heroku_client.addon_spec, {logentries: {plan: 'logentries:le_entry'}});
+  //  }).then(function (results) {
+  //    console.log(results[1]);
+  //    return configurator.export(app_configuration.name);
+  //  }).then(function (result) {
+  //    assert.deepEqual(result.addons, {logentries: {plan: 'logentries:le_entry'}})
   //    done();
   //  }).catch(done);
   //});
-  //
-  //it('should add a new addon when updating', function(done) {
-  //  var heroku_client = stub_heroku_client();
-  //
+
+  //it('should add a new addon when updating', function (done) {
+  //  var heroku_client = setup_heroku_client();
   //  var configurator = hiaac(heroku_client);
+  //  this.timeout(10000);
+  //
   //  var app_configuration = {
   //    name: 'sample-hiaac-heroku-app'
   //  };
@@ -193,7 +198,13 @@ describe('hiaac', function () {
   //  configurator(app_configuration).then(function () {
   //    return configurator(updated_app_configuration);
   //  }).then(function () {
-  //    assert.deepEqual(heroku_client.addon_spec, {logentries: {plan: 'logentries:le_tryit'}, librato: {plan: 'librato:development'}});
+  //    return configurator.export(app_configuration.name);
+  //  }).then(function (result) {
+  //    console.log(result);
+  //    assert.deepEqual(result.addons, {
+  //      logentries: {plan: 'logentries:le_tryit'},
+  //      librato: {plan: 'librato:development'}
+  //    });
   //    done();
   //  }).catch(done);
   //});

@@ -35,7 +35,7 @@ TODO:
 - remove duplication from tests
 - support adding/removing/updating addons 
 - record heroku answers and run them off the stub server 
-- create integration test that runs agains real heroku 
+- create integration test that runs against real heroku 
 - inheritance of props
 - heroku labs support: zero downtime, memory stats gathering
 - pipelines support
