@@ -43,3 +43,4 @@ TODO:
 - split lib code into smaller files (app, addons, collaborators etc.)
 - stack (create) vs build_stack (update)
 - deal with 201 addonc reated
+- collaborators: API list. delete not listen in config. create only delta.  
