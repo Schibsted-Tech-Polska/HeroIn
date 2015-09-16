@@ -28,8 +28,7 @@ Gotchas:
 - formation should be applied before features as preboot feature doesn't work on free formation
 
 TODO: 
-- dyno formation
-- support for log drain
+- support for log drain - delete non addon managed addons that are not listed explicitly
 - heroku redis settings
 - inheritance of props
 - exit code 1 on failure and report what failed
