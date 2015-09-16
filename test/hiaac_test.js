@@ -72,9 +72,12 @@ describe('hiaac', function () {
       },
       collaborators: ['mateusz.kwasniewski@schibsted.pl', 'kwasniewski.mateusz@gmail.com'],
       features: {
-        preboot: {enabled: true},
+        preboot: {enabled: false},
         'log-runtime-metrics': {enabled: true}
-      }
+      },
+      formation: [
+        { process: 'web', quantity: 1, size: 'Free' }
+      ]
     };
 
     configurator(app_configuration).then(function () {

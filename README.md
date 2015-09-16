@@ -3,25 +3,37 @@ Heroku Infrastructure As A Code (hiacc)
 
 This is WIP! Don't use it yet.
 
-Infrastructure as code:
-- version control your infrastructure
-- refactor 
-- test
-- deployment pipeline for infra changes
-- self documenting by just looking at the code
+What:
+- version control your infrastructure 
+- refactor your infrastructure
+- test your infrastructure 
+- track changes to your infrastructure in deployment pipelines
+- document your infrastructure as a code
 
-- heroku infra changes should go through this file. manual adjustments from the UI or heroku command line will be overridden.
-- e.g. addons no listed in hiaac will be nuked
+Why:
+- clicking does not scale
+- clicking is not auditable
+
+Principles:
+- don't reinvent config names, use original names from Heroku API
+- compact format so that you can describe everything in one text file
+- let Heroku API maintain the state of your infrastructure (no local files)
+- all changes should go through those files and your manual changes will be overriden 
 
 
 Gotchas:
 - removing env vars requires setting them to null
 - some addons don't support changing plans
-
+- some parts of Heroku API are flaky and return 200 before they make sure the resources are provisioned 
+- formation should be applied before features as preboot feature doesn't work on free formation
 
 TODO: 
-- nuke things that are not listed explicitly (addons, env vars, collaborators, drains)?
+- dyno formation
 - support for log drain
+- heroku redis settings
+- inheritance of props
+- exit code 1 on failure and report what failed
+- nuke things that are not listed explicitly (addons, env vars, collaborators, drains)?
 - native extensions: labs, heroku redis, logentries
 - same tests should run in memory and against real heroku - only to record real traffic. heroku api is too flaky for regular tests
 - setup travis ci build 
@@ -36,12 +48,9 @@ TODO:
 - support adding/removing/updating addons 
 - record heroku answers and run them off the stub server 
 - create integration test that runs against real heroku 
-- inheritance of props
-- heroku labs support: preboot, memory stats gathering
 - pipelines support
 - remove duplication from tests
 - split lib code into smaller files (app, addons, collaborators etc.)
 - stack (create) vs build_stack (update)
-- dyno formation
 - custom domains
 - what happens when preboot is not available for a given tier
