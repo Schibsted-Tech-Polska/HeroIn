@@ -70,7 +70,11 @@ describe('hiaac', function () {
           plan: 'librato:development'
         }
       },
-      collaborators: ['mateusz.kwasniewski@schibsted.pl', 'kwasniewski.mateusz@gmail.com']
+      collaborators: ['mateusz.kwasniewski@schibsted.pl', 'kwasniewski.mateusz@gmail.com'],
+      features: {
+        preboot: {enabled: true},
+        'log-runtime-metrics': {enabled: true}
+      }
     };
 
     configurator(app_configuration).then(function () {
@@ -83,6 +87,8 @@ describe('hiaac', function () {
       assert.equal(result.config_vars.NODE_ENV, 'production');
       assert.include(result.collaborators, 'mateusz.kwasniewski@schibsted.pl');
       assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
+      assert.equal(result.features.preboot.enabled, false); // preboot doesn't work on a free tier
+      assert.equal(result.features['log-runtime-metrics'].enabled, true);
       done();
     }).catch(done);
   });

@@ -19,15 +19,16 @@ Gotchas:
 - some addons don't support changing plans
 
 
-TODO:
-- export existing config 
-- same tests should run in memory and against real heroku
+TODO: 
+- nuke things that are not listed explicitly (addons, env vars, collaborators, drains)?
+- support for log drain
+- native extensions: labs, heroku redis, logentries
+- same tests should run in memory and against real heroku - only to record real traffic. heroku api is too flaky for regular tests
 - setup travis ci build 
 - proper env management: remove everything that's not explicitly listed or comes from addon (config_vars in addon info)
 - check name specified precondition
 - custom extensions for addons: logentries alerts
 - custom extensions for addons: heroku redis connection idle time
-- support for log drain
 - better logging about what is happening under the hood
 - advanced addon management - delete old addon when can't be upgraded but prompt a user. delete addons with null setter.
 - perf improvement - don't update when value doesn't change e.g. addon upgrade
@@ -36,9 +37,11 @@ TODO:
 - record heroku answers and run them off the stub server 
 - create integration test that runs against real heroku 
 - inheritance of props
-- heroku labs support: zero downtime, memory stats gathering
+- heroku labs support: preboot, memory stats gathering
 - pipelines support
 - remove duplication from tests
 - split lib code into smaller files (app, addons, collaborators etc.)
 - stack (create) vs build_stack (update)
-- deal with 201 addonc reated
+- dyno formation
+- custom domains
+- what happens when preboot is not available for a given tier
