@@ -88,8 +88,8 @@ describe('hiaac', function () {
       assert.equal(result.region, 'eu');
       assert.isUndefined(result.ignore_me);
       assert.equal(result.config_vars.NODE_ENV, 'production');
-      assert.include(result.collaborators, 'mateusz.kwasniewski@schibsted.pl');
-      assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
+      //assert.include(result.collaborators, 'mateusz.kwasniewski@schibsted.pl');
+      //assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
       assert.equal(result.features.preboot.enabled, false); // preboot doesn't work on a free tier
       assert.equal(result.features['log-runtime-metrics'].enabled, true);
       done();

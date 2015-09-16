@@ -4,6 +4,7 @@ Heroku Infrastructure As A Code (hiacc)
 This is WIP! Don't use it yet.
 
 What:
+------
 - version control your infrastructure 
 - refactor your infrastructure
 - test your infrastructure 
@@ -11,17 +12,37 @@ What:
 - document your infrastructure as a code
 
 Why:
+------
 - clicking does not scale
 - clicking is not auditable
 
 Principles:
+------
 - don't reinvent config names, use original names from Heroku API
 - compact format so that you can describe everything in one text file
 - let Heroku API maintain the state of your infrastructure (no local files)
 - all changes should go through those files and your manual changes will be overriden 
+- avoid duplication in configs (sane inheritance)
+- use JS for configuration (you can access process.env.VAR and use mixins)
+
+What parts of Heroku infrastructure are supported (create, update, delete, export):
+------
+- app
+- config/environment variables
+- addons (basic plan setting)
+- collaborators
+- features (e.g. preboot, log-runtime-metrics)
+- dyno formation (aka. dyno scaling)
+- log drains (export)
+
+What needs to be added:
+------
+- advanced addons config (e.g. heroku redis timeout, logentries alert) - emailed addon providers to add some missing injection points
+- log drain update/delete
 
 
 Gotchas:
+------
 - removing env vars requires setting them to null
 - some addons don't support changing plans
 - some parts of Heroku API are flaky and return 200 before they make sure the resources are provisioned 
