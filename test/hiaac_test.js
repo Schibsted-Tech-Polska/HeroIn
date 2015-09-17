@@ -1,10 +1,141 @@
 var chai = require('chai'),
   assert = chai.assert,
   hiaac = require('../lib/hiaac');
+var _ = require('lodash');
 var Heroku = require('heroku-client');
 
 function setup_heroku_client() {
-  return new Heroku({token: process.env.HEROKU_API_TOKEN, debug: true});
+  var stub_heroku_client = {
+    _app: {name: '', collaborators: [], config_vars: {}, features: {}},
+    apps: function (app_name) {
+      return {
+        info: function () {
+          if(stub_heroku_client._app && (stub_heroku_client._app.name === app_name)) {
+            return Promise.resolve({
+              name: stub_heroku_client._app.name,
+              "region": {
+                "name": stub_heroku_client._app.region
+              },
+              "maintenance": stub_heroku_client._app.maintenance,
+              "stack": {
+                "name": stub_heroku_client._app.stack
+              },
+            });
+          } else {
+            return Promise.reject({"statusCode":404,"body":{"resource":"app","id":"not_found","message":"Couldn't find that app."}});
+          }
+        },
+        update: function (config) {
+          if(config.stack) {
+            stub_heroku_client._app.stack = config.stack;
+          }
+          if(config.maintenance) {
+            stub_heroku_client._app.maintenance = config.maintenance;
+          }
+          return Promise.resolve(config);
+        },
+        create: function (config) {
+          stub_heroku_client._app.name = config.name;
+          stub_heroku_client._app.region = config.region || 'eu';
+          stub_heroku_client._app.maintenance = config.maintenance || false;
+          stub_heroku_client._app.stack = config.stack || 'cedar-14';
+          return Promise.resolve(config);
+        },
+        delete: function () {
+          stub_heroku_client._app.name = '';
+          return Promise.resolve();
+        },
+        addons: function (name) {
+          return {
+            info: function () {
+              return Promise.resolve();
+            },
+            update: function (config) {
+
+            },
+            create: function (config) {
+
+            }
+          }
+        },
+        addonAttachments: function() {
+          return {
+            listByApp: function() {
+              return Promise.resolve([]);
+            }
+          };
+        },
+        configVars: function () {
+          return {
+            info: function () {
+              return Promise.resolve(stub_heroku_client._app.config_vars);
+            },
+            update: function (config) {
+              for(var key in config) {
+                if(config[key] === null && stub_heroku_client._app.config_vars[key]) {
+                  delete stub_heroku_client._app.config_vars[key];
+                } else {
+                  stub_heroku_client._app.config_vars[key] = config[key];
+                }
+              }
+              return Promise.resolve(config);
+            }
+          }
+        },
+        collaborators: function (name) {
+          return {
+            list: function () {
+              return Promise.resolve(stub_heroku_client._app.collaborators.map(function(email) {
+                return {user: {email: email}};
+              }));
+            },
+            create: function (config) {
+              stub_heroku_client._app.collaborators.push(config.user);
+              return Promise.resolve();
+            },
+            delete: function () {
+              stub_heroku_client._app.collaborators = _.without(stub_heroku_client._app.collaborators, name);
+              return Promise.resolve();
+            }
+          }
+        },
+        features: function (name) {
+          return {
+            list: function () {
+              var array = Object.keys(stub_heroku_client._app.features).map(function(feature) {
+                return {name: feature, enabled: stub_heroku_client._app.features[feature].enabled};
+              });
+              return Promise.resolve(array);
+            },
+            update: function (config) {
+              stub_heroku_client._app.features[name] = {enabled: config.enabled};
+              return Promise.resolve();
+            }
+          }
+        },
+        formation: function () {
+          return {
+            list: function () {
+              return Promise.resolve([]);
+            },
+            batchUpdate: function (config) {
+
+            }
+          }
+        },
+        logDrains: function () {
+          return {
+            list: function () {
+              return Promise.resolve([]);
+            }
+          }
+        }
+      }
+    }
+  };
+
+  return stub_heroku_client;
+  //return new Heroku({token: process.env.HEROKU_API_TOKEN, debug: true});
 }
 
 describe('hiaac', function () {
@@ -45,6 +176,7 @@ describe('hiaac', function () {
     }).then(function (msg) {
       assert.notOk(msg, 'app should not exist');
     }, function (err) {
+      console.log('Error', JSON.stringify(err));
       assert.equal(err.statusCode, 404);
       done();
     }).catch(done);
@@ -76,7 +208,7 @@ describe('hiaac', function () {
         'log-runtime-metrics': {enabled: true}
       },
       formation: [
-        { process: 'web', quantity: 1, size: 'Free' }
+        {process: 'web', quantity: 1, size: 'Free'}
       ],
       log_drains: ['http://stats.example.com:7000']
     };
@@ -89,8 +221,8 @@ describe('hiaac', function () {
       assert.equal(result.region, 'eu');
       assert.isUndefined(result.ignore_me);
       assert.equal(result.config_vars.NODE_ENV, 'production');
-      //assert.include(result.collaborators, 'mateusz.kwasniewski@schibsted.pl');
-      //assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
+      assert.include(result.collaborators, 'mateusz.kwasniewski@schibsted.pl');
+      assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
       assert.equal(result.features.preboot.enabled, false); // preboot doesn't work on a free tier
       assert.equal(result.features['log-runtime-metrics'].enabled, true);
       done();
@@ -111,11 +243,11 @@ describe('hiaac', function () {
       collaborators: ['krystian.jarmicki@schibsted.pl', 'kwasniewski.mateusz@gmail.com']
     };
 
-    configurator(app_configuration).then(function() {
+    configurator(app_configuration).then(function () {
       return configurator(updated_configuration);
-    }).then(function() {
+    }).then(function () {
       return configurator.export(app_configuration.name);
-    }).then(function(result) {
+    }).then(function (result) {
       assert.include(result.collaborators, 'krystian.jarmicki@schibsted.pl');
       assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
       assert.notInclude(result.collaborators, 'miroslaw.kucharzyk@schibsted.pl');
