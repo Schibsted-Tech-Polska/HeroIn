@@ -50,6 +50,7 @@ Gotchas:
 - formation should be applied before features as preboot feature doesn't work on free formation
 
 TODO: 
+- refactor in memory client
 - support for log drain - delete non addon managed addons that are not listed explicitly
 - heroku redis settings (create from API, update from command line)
 - support adding/removing/updating addons 

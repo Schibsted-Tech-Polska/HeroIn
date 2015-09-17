@@ -97,6 +97,8 @@ describe('hiaac', function () {
       assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
       assert.equal(result.features.preboot.enabled, false); // preboot doesn't work on a free tier
       assert.equal(result.features['log-runtime-metrics'].enabled, true);
+      assert.deepEqual(result.addons.logentries, {plan: 'logentries:le_tryit'});
+      assert.deepEqual(result.addons.librato, {plan: 'librato:development'});
       done();
     }).catch(done);
   });
