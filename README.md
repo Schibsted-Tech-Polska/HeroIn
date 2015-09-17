@@ -37,8 +37,9 @@ What parts of Heroku infrastructure are supported (create, update, delete, expor
 
 What needs to be added:
 ------
-- advanced addons config (e.g. heroku redis timeout, logentries alert) - emailed addon providers to add some missing injection points
+- advanced addons config (e.g. heroku redis timeout, logentries alert, deploy hooks) - emailed addon providers to add some missing injection points
 - log drain update/delete
+- domains
 
 
 Gotchas:
@@ -74,3 +75,6 @@ TODO:
 - stack (create) vs build_stack (update)
 - custom domains
 - what happens when preboot is not available for a given tier
+- default host function
+- deploy hooks configuration
+- debug mode that prints every step to the console and regular mode that just prints step names

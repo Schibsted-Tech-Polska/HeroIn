@@ -20,6 +20,6 @@
   },
   "dependencies": {
     "heroku-client": "2.1.0",
-    "underscore": "^1.8.3"
+    "lodash": "3.10.1"
   }
 }
