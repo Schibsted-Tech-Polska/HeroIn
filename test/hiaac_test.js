@@ -56,7 +56,7 @@ function setup_heroku_client() {
             create: function (config) {
 
             }
-          }
+          };
         },
         addonAttachments: function() {
           return {
@@ -80,7 +80,7 @@ function setup_heroku_client() {
               }
               return Promise.resolve(config);
             }
-          }
+          };
         },
         collaborators: function (name) {
           return {
@@ -97,7 +97,7 @@ function setup_heroku_client() {
               stub_heroku_client._app.collaborators = _.without(stub_heroku_client._app.collaborators, name);
               return Promise.resolve();
             }
-          }
+          };
         },
         features: function (name) {
           return {
@@ -111,7 +111,7 @@ function setup_heroku_client() {
               stub_heroku_client._app.features[name] = {enabled: config.enabled};
               return Promise.resolve();
             }
-          }
+          };
         },
         formation: function () {
           return {
@@ -121,16 +121,16 @@ function setup_heroku_client() {
             batchUpdate: function (config) {
 
             }
-          }
+          };
         },
         logDrains: function () {
           return {
             list: function () {
               return Promise.resolve([]);
             }
-          }
+          };
         }
-      }
+      };
     }
   };
 
