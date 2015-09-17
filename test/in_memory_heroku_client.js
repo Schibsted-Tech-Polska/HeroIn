@@ -1,23 +1,23 @@
 var _ = require('lodash');
 
 
-var stub_heroku_client = {
+var stubHerokuClient = {
     _app: {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}},
     clean: function () {
-      stub_heroku_client._app = {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}};
+      stubHerokuClient._app = {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}};
     },
     apps: function (app_name) {
       return {
         info: function () {
-          if (stub_heroku_client._app && (stub_heroku_client._app.name === app_name)) {
+          if (stubHerokuClient._app && (stubHerokuClient._app.name === app_name)) {
             return Promise.resolve({
-              name: stub_heroku_client._app.name,
+              name: stubHerokuClient._app.name,
               "region": {
-                "name": stub_heroku_client._app.region
+                "name": stubHerokuClient._app.region
               },
-              "maintenance": stub_heroku_client._app.maintenance,
+              "maintenance": stubHerokuClient._app.maintenance,
               "stack": {
-                "name": stub_heroku_client._app.stack
+                "name": stubHerokuClient._app.stack
               },
             });
           } else {
@@ -29,34 +29,35 @@ var stub_heroku_client = {
         },
         update: function (config) {
           if (config.stack) {
-            stub_heroku_client._app.stack = config.stack;
+            stubHerokuClient._app.stack = config.stack;
           }
           if (config.maintenance) {
-            stub_heroku_client._app.maintenance = config.maintenance;
+            stubHerokuClient._app.maintenance = config.maintenance;
           }
           return Promise.resolve(config);
         },
         create: function (config) {
-          stub_heroku_client._app.name = config.name;
-          stub_heroku_client._app.region = config.region || 'eu';
-          stub_heroku_client._app.maintenance = config.maintenance || false;
-          stub_heroku_client._app.stack = config.stack || 'cedar-14';
+          stubHerokuClient._app.name = config.name;
+          stubHerokuClient._app.region = config.region || 'eu';
+          stubHerokuClient._app.maintenance = config.maintenance || false;
+          stubHerokuClient._app.stack = config.stack || 'cedar-14';
           return Promise.resolve(config);
         },
         delete: function () {
-          stub_heroku_client._app.name = '';
+          stubHerokuClient._app.name = '';
           return Promise.resolve();
         },
         addons: function (id) {
           return {
             info: function () {
-              if (!stub_heroku_client._app.addons[id]) {
+              var addonConfig = stubHerokuClient._app.addons[id];
+              if (!addonConfig) {
                 return Promise.reject();
               }
-              var name = stub_heroku_client._app.addons[id].plan.split(':')[0];
+              var name = addonConfig.plan.split(':')[0];
               var herokuAddonInfo = {
                 plan: {
-                  name: stub_heroku_client._app.addons[id].plan
+                  name: addonConfig.plan
                 },
                 id: name,
                 addon_service: {
@@ -67,23 +68,19 @@ var stub_heroku_client = {
             },
             update: function (config) {
               var name = config.plan.split(':')[0];
-              stub_heroku_client._app.addons[name] = config;
+              stubHerokuClient._app.addons[name] = config;
               return Promise.resolve();
             },
             create: function (config) {
               var name = config.plan.split(':')[0];
-              stub_heroku_client._app.addons[name] = config;
+              stubHerokuClient._app.addons[name] = config;
               return Promise.resolve();
             },
             listByApp: function () {
-              var array = Object.keys(stub_heroku_client._app.addons).map(function (addon) {
-                var name = stub_heroku_client._app.addons[addon].plan.split(':')[0];
+              var array = Object.keys(stubHerokuClient._app.addons).map(function (addon) {
+                var name = stubHerokuClient._app.addons[addon].plan.split(':')[0];
                 return {
-                  plan: {name: stub_heroku_client._app.addons[addon].plan},
-                  id: name,
-                  addon_service: {
-                    name: name
-                  }
+                  id: name
                 };
               });
               return Promise.resolve(array);
@@ -100,14 +97,14 @@ var stub_heroku_client = {
         configVars: function () {
           return {
             info: function () {
-              return Promise.resolve(stub_heroku_client._app.config_vars);
+              return Promise.resolve(stubHerokuClient._app.config_vars);
             },
             update: function (config) {
               for (var key in config) {
-                if (config[key] === null && stub_heroku_client._app.config_vars[key]) {
-                  delete stub_heroku_client._app.config_vars[key];
+                if (config[key] === null && stubHerokuClient._app.config_vars[key]) {
+                  delete stubHerokuClient._app.config_vars[key];
                 } else {
-                  stub_heroku_client._app.config_vars[key] = config[key];
+                  stubHerokuClient._app.config_vars[key] = config[key];
                 }
               }
               return Promise.resolve(config);
@@ -117,16 +114,16 @@ var stub_heroku_client = {
         collaborators: function (name) {
           return {
             list: function () {
-              return Promise.resolve(stub_heroku_client._app.collaborators.map(function (email) {
+              return Promise.resolve(stubHerokuClient._app.collaborators.map(function (email) {
                 return {user: {email: email}};
               }));
             },
             create: function (config) {
-              stub_heroku_client._app.collaborators.push(config.user);
+              stubHerokuClient._app.collaborators.push(config.user);
               return Promise.resolve();
             },
             delete: function () {
-              stub_heroku_client._app.collaborators = _.without(stub_heroku_client._app.collaborators, name);
+              stubHerokuClient._app.collaborators = _.without(stubHerokuClient._app.collaborators, name);
               return Promise.resolve();
             }
           };
@@ -134,13 +131,13 @@ var stub_heroku_client = {
         features: function (name) {
           return {
             list: function () {
-              var array = Object.keys(stub_heroku_client._app.features).map(function (feature) {
-                return {name: feature, enabled: stub_heroku_client._app.features[feature].enabled};
+              var array = Object.keys(stubHerokuClient._app.features).map(function (feature) {
+                return {name: feature, enabled: stubHerokuClient._app.features[feature].enabled};
               });
               return Promise.resolve(array);
             },
             update: function (config) {
-              stub_heroku_client._app.features[name] = {enabled: config.enabled};
+              stubHerokuClient._app.features[name] = {enabled: config.enabled};
               return Promise.resolve();
             }
           };
@@ -168,6 +165,6 @@ var stub_heroku_client = {
   ;
 
 module.exports = function () {
-  stub_heroku_client.clean();
-  return stub_heroku_client;
+  stubHerokuClient.clean();
+  return stubHerokuClient;
 };

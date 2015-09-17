@@ -186,74 +186,74 @@ describe('hiaac', function () {
     }).catch(done);
   });
 
-  //it('should update addons pricing option', function (done) {
-  //  var heroku_client = setup_heroku_client();
-  //  var configurator = hiaac(heroku_client);
-  //  this.timeout(10000);
-  //
-  //  var app_configuration = {
-  //    name: 'sample-hiaac-heroku-app',
-  //    addons: {
-  //      logentries: {
-  //        plan: 'logentries:le_tryit'
-  //      }
-  //    }
-  //  };
-  //
-  //  var updated_app_configuration = {
-  //    name: 'sample-hiaac-heroku-app',
-  //    addons: {
-  //      logentries: {
-  //        plan: 'logentries:le_entry'
-  //      }
-  //    }
-  //  };
-  //
-  //  configurator(app_configuration).then(function () {
-  //    return configurator(updated_app_configuration);
-  //  }).then(function (results) {
-  //    console.log(results[1]);
-  //    return configurator.export(app_configuration.name);
-  //  }).then(function (result) {
-  //    assert.deepEqual(result.addons, {logentries: {plan: 'logentries:le_entry'}})
-  //    done();
-  //  }).catch(done);
-  //});
+  it('should update addons pricing option', function (done) {
+    var heroku_client = setup_heroku_client();
+    var configurator = hiaac(heroku_client);
+    this.timeout(10000);
 
-  //it('should add a new addon when updating', function (done) {
-  //  var heroku_client = setup_heroku_client();
-  //  var configurator = hiaac(heroku_client);
-  //  this.timeout(10000);
-  //
-  //  var app_configuration = {
-  //    name: 'sample-hiaac-heroku-app'
-  //  };
-  //
-  //  var updated_app_configuration = {
-  //    name: 'sample-hiaac-heroku-app',
-  //    addons: {
-  //      logentries: {
-  //        plan: 'logentries:le_tryit'
-  //      },
-  //      librato: {
-  //        plan: 'librato:development'
-  //      }
-  //    }
-  //  };
-  //
-  //  configurator(app_configuration).then(function () {
-  //    return configurator(updated_app_configuration);
-  //  }).then(function () {
-  //    return configurator.export(app_configuration.name);
-  //  }).then(function (result) {
-  //    console.log(result);
-  //    assert.deepEqual(result.addons, {
-  //      logentries: {plan: 'logentries:le_tryit'},
-  //      librato: {plan: 'librato:development'}
-  //    });
-  //    done();
-  //  }).catch(done);
-  //});
+    var app_configuration = {
+      name: 'sample-hiaac-heroku-app',
+      addons: {
+        logentries: {
+          plan: 'logentries:le_tryit'
+        }
+      }
+    };
+
+    var updated_app_configuration = {
+      name: 'sample-hiaac-heroku-app',
+      addons: {
+        logentries: {
+          plan: 'logentries:le_entry'
+        }
+      }
+    };
+
+    configurator(app_configuration).then(function () {
+      return configurator(updated_app_configuration);
+    }).then(function (results) {
+      console.log(results[1]);
+      return configurator.export(app_configuration.name);
+    }).then(function (result) {
+      assert.deepEqual(result.addons, {logentries: {plan: 'logentries:le_entry'}});
+      done();
+    }).catch(done);
+  });
+
+  it('should add a new addon when updating', function (done) {
+    var heroku_client = setup_heroku_client();
+    var configurator = hiaac(heroku_client);
+    this.timeout(10000);
+
+    var app_configuration = {
+      name: 'sample-hiaac-heroku-app'
+    };
+
+    var updated_app_configuration = {
+      name: 'sample-hiaac-heroku-app',
+      addons: {
+        logentries: {
+          plan: 'logentries:le_tryit'
+        },
+        librato: {
+          plan: 'librato:development'
+        }
+      }
+    };
+
+    configurator(app_configuration).then(function () {
+      return configurator(updated_app_configuration);
+    }).then(function () {
+      return configurator.export(app_configuration.name);
+    }).then(function (result) {
+      console.log(result);
+      assert.deepEqual(result.addons, {
+        logentries: {plan: 'logentries:le_tryit'},
+        librato: {plan: 'librato:development'}
+      });
+      done();
+    }).catch(done);
+  });
 
 
 });
