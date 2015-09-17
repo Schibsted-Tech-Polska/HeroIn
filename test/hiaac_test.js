@@ -47,7 +47,7 @@ describe('hiaac', function () {
     }, function (err) {
       assert.equal(err.statusCode, 404);
       done();
-    });
+    }).catch(done);
   });
 
   it('should create heroku app', function (done) {
@@ -77,7 +77,8 @@ describe('hiaac', function () {
       },
       formation: [
         { process: 'web', quantity: 1, size: 'Free' }
-      ]
+      ],
+      log_drains: ['http://stats.example.com:7000']
     };
 
     configurator(app_configuration).then(function () {

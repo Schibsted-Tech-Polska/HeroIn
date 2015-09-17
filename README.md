@@ -51,9 +51,10 @@ Gotchas:
 
 TODO: 
 - support for log drain - delete non addon managed addons that are not listed explicitly
-- heroku redis settings
-- inheritance of props
+- heroku redis settings (create from API, update from command line)
+- support adding/removing/updating addons 
 - exit code 1 on failure and report what failed
+- nuke non addon, not listed config vars
 - nuke things that are not listed explicitly (addons, env vars, collaborators, drains)?
 - native extensions: labs, heroku redis, logentries
 - same tests should run in memory and against real heroku - only to record real traffic. heroku api is too flaky for regular tests
@@ -61,12 +62,9 @@ TODO:
 - proper env management: remove everything that's not explicitly listed or comes from addon (config_vars in addon info)
 - check name specified precondition
 - custom extensions for addons: logentries alerts
-- custom extensions for addons: heroku redis connection idle time
-- better logging about what is happening under the hood
 - advanced addon management - delete old addon when can't be upgraded but prompt a user. delete addons with null setter.
 - perf improvement - don't update when value doesn't change e.g. addon upgrade
 - remove duplication from tests
-- support adding/removing/updating addons 
 - record heroku answers and run them off the stub server 
 - create integration test that runs against real heroku 
 - pipelines support
@@ -78,3 +76,4 @@ TODO:
 - default host function
 - deploy hooks configuration
 - debug mode that prints every step to the console and regular mode that just prints step names
+- when everythign is ready upgrade to ES6
