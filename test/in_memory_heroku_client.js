@@ -169,7 +169,7 @@ var stubHerokuClient = {
               var array = stubHerokuClient._app.log_drains.map(function(url) {
                 return {
                   url: url
-                }
+                };
               });
               return Promise.resolve(array);
             },
