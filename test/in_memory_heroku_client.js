@@ -76,10 +76,18 @@ var stubHerokuClient = {
               stubHerokuClient._app.addons[name] = config;
               return Promise.resolve();
             },
+            delete: function () {
+              delete stubHerokuClient._app.addons[id];
+              return Promise.resolve();
+            },
             listByApp: function () {
               var array = Object.keys(stubHerokuClient._app.addons).map(function (addon) {
-                var name = stubHerokuClient._app.addons[addon].plan.split(':')[0];
+                var addonConfig = stubHerokuClient._app.addons[addon];
+                var name = addonConfig.plan.split(':')[0];
                 return {
+                  plan: {
+                    name: addonConfig.plan
+                  },
                   id: name
                 };
               });

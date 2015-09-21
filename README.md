@@ -48,13 +48,16 @@ Gotchas:
 ------
 - removing env vars requires setting them to null
 - some addons don't support changing plans
-- some parts of x§Heroku API are flaky and return 200 before they make sure the resources are provisioned 
+- some parts of Heroku API are flaky and return 200 before they make sure the resources are provisioned 
 - formation should be applied before features as preboot feature doesn't work on free formation
 
 TODO: 
 - delete addons that are not listed
+- remove duplication from tests (update tests - original, updated, assertions)
+- hamjest assertion that are readable - basic asserts from chai are useless
 - deploy hooks configuration
 - refactor in memory client
+- performance improvement: check if addon, collaborator changed and avoid API calls
 - tests for every supported feature
 - support for log drain - delete non addon managed addons that are not listed explicitly
 - heroku redis settings (create from API, update from command line)
@@ -63,7 +66,6 @@ TODO:
 - nuke non addon, not listed config vars
 - nuke things that are not listed explicitly (addons, env vars, collaborators, drains)?
 - native extensions: labs, heroku redis, logentries
-- setup travis ci build 
 - proper env management: remove everything that's not explicitly listed or comes from addon (config_vars in addon info)
 - check name specified precondition
 - custom extensions for addons: logentries alerts
@@ -72,7 +74,6 @@ TODO:
 - create integration test that run against real heroku. one big create. one big update. one big export.
 - more detailed unit tests for individual components updates
 - pipelines support
-- remove duplication from tests
 - stack (create) vs build_stack (update)
 - custom domains
 - what happens when preboot is not available for a given tier
