@@ -1,6 +1,8 @@
 Heroku Infrastructure As A Code (hiacc)
 -------
 
+[![Build Status](https://travis.schibsted.io/snt/hiaac.svg?token=rZVkndZyUmroq3r7Jeyx&branch=master)](https://travis.schibsted.io/snt/hiaac)
+
 This is WIP! Don't use it yet.
 
 What:
