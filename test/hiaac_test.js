@@ -99,6 +99,7 @@ describe('hiaac', function () {
       assert.equal(result.features['log-runtime-metrics'].enabled, true);
       assert.deepEqual(result.addons.logentries, {plan: 'logentries:le_tryit'});
       assert.deepEqual(result.addons.librato, {plan: 'librato:development'});
+      assert.include(result.log_drains, 'http://stats.example.com:7000');
       done();
     }).catch(done);
   });

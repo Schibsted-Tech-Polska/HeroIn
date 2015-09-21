@@ -50,16 +50,16 @@ Gotchas:
 - some addons don't support changing plans
 - some parts of Heroku API are flaky and return 200 before they make sure the resources are provisioned 
 - formation should be applied before features as preboot feature doesn't work on free formation
+- heroku API for addons doesn't support config updates only plan updates
+- all config for an addon should be set when creating a new addon
 
 TODO: 
-- remove duplication from tests (update tests - original, updated, assertions)
-- hamjest assertion that are readable - basic asserts from chai are useless
-- deploy hooks configuration
+- support for log drain - delete non addon managed addons that are not listed explicitly
 - debug mode that prints every step to the console and regular mode that just prints step names
 - refactor in memory client
 - performance improvement: check if addon, collaborator changed and avoid API calls
+- hamjest assertion that are readable - basic asserts from chai are useless
 - tests for every supported feature
-- support for log drain - delete non addon managed addons that are not listed explicitly
 - heroku redis settings (create from API, update from command line)
 - support adding/removing/updating addons 
 - exit code 1 on failure and report what failed
