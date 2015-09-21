@@ -52,10 +52,10 @@ Gotchas:
 - formation should be applied before features as preboot feature doesn't work on free formation
 
 TODO: 
-- delete addons that are not listed
 - remove duplication from tests (update tests - original, updated, assertions)
 - hamjest assertion that are readable - basic asserts from chai are useless
 - deploy hooks configuration
+- debug mode that prints every step to the console and regular mode that just prints step names
 - refactor in memory client
 - performance improvement: check if addon, collaborator changed and avoid API calls
 - tests for every supported feature
@@ -78,7 +78,6 @@ TODO:
 - custom domains
 - what happens when preboot is not available for a given tier
 - default host function
-- debug mode that prints every step to the console and regular mode that just prints step names
 - when everything is ready upgrade to ES6
 - prune mode: removes what's not explicitly listed except from addon related stuff
 - add executable script to run it as a binary from a command line
