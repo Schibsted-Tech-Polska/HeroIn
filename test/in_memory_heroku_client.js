@@ -68,6 +68,9 @@ var stubHerokuClient = {
             },
             update: function (config) {
               var name = config.plan.split(':')[0];
+              if(config.plan === stubHerokuClient._app.addons[name].plan) {
+                return Promise.reject('The plan already exists');
+              }
               stubHerokuClient._app.addons[name] = config;
               return Promise.resolve();
             },
