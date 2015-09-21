@@ -104,10 +104,6 @@ describe('hiaac', function () {
   });
 
   it('should manage collaborators', function (done) {
-    var heroku_client = setup_heroku_client();
-    var configurator = hiaac(heroku_client);
-    this.timeout(10000);
-
     var app_configuration = {
       name: 'sample-hiaac-heroku-app',
       collaborators: ['miroslaw.kucharzyk@schibsted.pl', 'kwasniewski.mateusz@gmail.com']
@@ -117,17 +113,12 @@ describe('hiaac', function () {
       collaborators: ['krystian.jarmicki@schibsted.pl', 'kwasniewski.mateusz@gmail.com']
     };
 
-    configurator(app_configuration).then(function () {
-      return configurator(updated_configuration);
-    }).then(function () {
-      return configurator.export(app_configuration.name);
-    }).then(function (result) {
+    updateTest(app_configuration, updated_configuration, function (result) {
       assert.include(result.collaborators, 'krystian.jarmicki@schibsted.pl');
       assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
       assert.notInclude(result.collaborators, 'miroslaw.kucharzyk@schibsted.pl');
       done();
-    }).catch(done);
-
+    }, done);
   });
 
   it('should update basic app info', function (done) {
@@ -158,10 +149,6 @@ describe('hiaac', function () {
   });
 
   it('should update config vars', function (done) {
-    var heroku_client = setup_heroku_client();
-    var configurator = hiaac(heroku_client);
-    this.timeout(10000);
-
     var app_configuration = {
       name: 'sample-hiaac-heroku-app',
       config_vars: {
@@ -176,21 +163,13 @@ describe('hiaac', function () {
       }
     };
 
-    configurator(app_configuration).then(function () {
-      return configurator(updated_app_configuration);
-    }).then(function () {
-      return configurator.export(app_configuration.name);
-    }).then(function (result) {
+    updateTest(app_configuration, updated_app_configuration, function (result) {
       assert.deepEqual(result.config_vars, {FEATURE_TOGGLE_B: 'B'});
       done();
-    }).catch(done);
+    }, done);
   });
 
   it('should update addons pricing option', function (done) {
-    var heroku_client = setup_heroku_client();
-    var configurator = hiaac(heroku_client);
-    this.timeout(10000);
-
     var app_configuration = {
       name: 'sample-hiaac-heroku-app',
       addons: {
@@ -209,21 +188,13 @@ describe('hiaac', function () {
       }
     };
 
-    configurator(app_configuration).then(function () {
-      return configurator(updated_app_configuration);
-    }).then(function () {
-      return configurator.export(app_configuration.name);
-    }).then(function (result) {
+    updateTest(app_configuration, updated_app_configuration, function (result) {
       assert.deepEqual(result.addons, {logentries: {plan: 'logentries:le_entry'}});
       done();
-    }).catch(done);
+    }, done);
   });
 
   it('should add a new addon when updating', function (done) {
-    var heroku_client = setup_heroku_client();
-    var configurator = hiaac(heroku_client);
-    this.timeout(10000);
-
     var app_configuration = {
       name: 'sample-hiaac-heroku-app'
     };
@@ -240,25 +211,17 @@ describe('hiaac', function () {
       }
     };
 
-    configurator(app_configuration).then(function () {
-      return configurator(updated_app_configuration);
-    }).then(function () {
-      return configurator.export(app_configuration.name);
-    }).then(function (result) {
+    updateTest(app_configuration, updated_app_configuration, function (result) {
       console.log(result);
       assert.deepEqual(result.addons, {
         logentries: {plan: 'logentries:le_tryit'},
         librato: {plan: 'librato:development'}
       });
       done();
-    }).catch(done);
+    }, done);
   });
 
-  it('should delete addons that are not listed explicitly', function(done) {
-    var heroku_client = setup_heroku_client();
-    var configurator = hiaac(heroku_client);
-    this.timeout(10000);
-
+  it('should delete addons that are not listed explicitly', function (done) {
     var app_configuration = {
       name: 'sample-hiaac-heroku-app',
       addons: {
@@ -280,18 +243,24 @@ describe('hiaac', function () {
       }
     };
 
-    configurator(app_configuration).then(function () {
-      return configurator(updated_app_configuration);
-    }).then(function () {
-      return configurator.export(app_configuration.name);
-    }).then(function (result) {
-      console.log(result);
+    updateTest(app_configuration, updated_app_configuration, function (result) {
       assert.deepEqual(result.addons, {
         librato: {plan: 'librato:development'}
       });
       done();
-    }).catch(done);
+    }, done);
   });
 
 
 });
+
+function updateTest(original_configuration, updated_configuration, success, error) {
+  var heroku_client = setup_heroku_client();
+  var configurator = hiaac(heroku_client);
+
+  configurator(original_configuration).then(function () {
+    return configurator(updated_configuration);
+  }).then(function () {
+    return configurator.export(original_configuration.name);
+  }).then(success).catch(error);
+}
