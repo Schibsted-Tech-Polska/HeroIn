@@ -159,7 +159,6 @@ describe('hiaac', function () {
     var updated_app_configuration = {
       name: 'sample-hiaac-heroku-app',
       config_vars: {
-        FEATURE_TOGGLE_A: null,
         FEATURE_TOGGLE_B: 'B'
       }
     };
