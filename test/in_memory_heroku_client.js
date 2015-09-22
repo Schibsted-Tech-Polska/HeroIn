@@ -163,18 +163,26 @@ var stubHerokuClient = {
             }
           };
         },
-        logDrains: function () {
+        logDrains: function (url) {
           return {
             list: function () {
               var array = stubHerokuClient._app.log_drains.map(function(url) {
                 return {
-                  url: url
+                  url: url,
+                  id: url
                 };
               });
               return Promise.resolve(array);
             },
             create: function(config) {
               stubHerokuClient._app.log_drains.push(config.url);
+              return Promise.resolve();
+            },
+            delete: function() {
+              if(stubHerokuClient._app.log_drains.indexOf(url) === -1) {
+                return Promise.reject('Log drain does not exist');
+              }
+              stubHerokuClient._app.log_drains = _.without(stubHerokuClient._app.log_drains, url);
               return Promise.resolve();
             }
           };

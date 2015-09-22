@@ -54,7 +54,8 @@ Gotchas:
 - all config for an addon should be set when creating a new addon
 
 TODO: 
-- support for log drain - delete non addon managed addons that are not listed explicitly
+- support for log drain - delete non addon logdrains
+- nuke things that are not listed explicitly (addons, env vars, collaborators, drains)?
 - debug mode that prints every step to the console and regular mode that just prints step names
 - refactor in memory client
 - performance improvement: check if addon, collaborator changed and avoid API calls
@@ -64,7 +65,6 @@ TODO:
 - support adding/removing/updating addons 
 - exit code 1 on failure and report what failed
 - nuke non addon, not listed config vars
-- nuke things that are not listed explicitly (addons, env vars, collaborators, drains)?
 - native extensions: labs, heroku redis, logentries
 - proper env management: remove everything that's not explicitly listed or comes from addon (config_vars in addon info)
 - check name specified precondition

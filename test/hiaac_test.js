@@ -252,6 +252,24 @@ describe('hiaac', function () {
     }, done);
   });
 
+  it('should delete non addon logdrains that are not listed explicitly', function (done) {
+    var app_configuration = {
+      name: 'sample-hiaac-heroku-app',
+      log_drains: ['http://stats.example.com:7000', 'http://stats.example.com:7001']
+    };
+
+    var updated_app_configuration = {
+      name: 'sample-hiaac-heroku-app',
+      log_drains: ['http://stats.example.com:7000']
+    };
+
+    updateTest(app_configuration, updated_app_configuration, function(result) {
+      assert.include(result.log_drains, 'http://stats.example.com:7000');
+      assert.notInclude(result.log_drains, 'http://stats.example.com:7001');
+      done();
+    }, done);
+  });
+
 
 });
 
