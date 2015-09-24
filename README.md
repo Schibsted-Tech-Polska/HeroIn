@@ -54,6 +54,7 @@ Gotchas:
 - all config for an addon should be set when creating a new addon
 
 TODO: 
+- support for the new pipelines - pipelines are managed by apps and gocd
 - nuke non addon, not listed config vars
 - dyno formation - check corner cases
 - debug mode that prints every step to the console and regular mode that just prints step names
