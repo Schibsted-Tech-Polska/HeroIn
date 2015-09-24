@@ -100,6 +100,7 @@ describe('hiaac', function () {
       assert.deepEqual(result.addons.librato, {plan: 'librato:development'});
       assert.include(result.log_drains, 'http://stats.example.com:7000');
       assert.include(result.domains, 'http://example.com');
+      assert.include(result.domains, 'sample-hiaac-heroku-app.herokuapp.com'); // default domain
       done();
     }).catch(done);
   });
@@ -271,17 +272,18 @@ describe('hiaac', function () {
   it('should update domains', function (done) {
     var app_configuration = {
       name: 'sample-hiaac-heroku-app',
-      domains: ['http://example.com', 'http://another_example.com']
+      domains: ['www.example.com', 'www.another_example.com']
     };
 
     var updated_app_configuration = {
       name: 'sample-hiaac-heroku-app',
-      domains: ['http://example.com', 'http://yet_another_example.com']
+      domains: ['www.example.com', 'www.yet_another_example.com']
     };
 
     updateTest(app_configuration, updated_app_configuration, function (result) {
-      assert.include(result.domains, 'http://yet_another_example.com');
-      assert.notInclude(result.domains, 'http://another_example.com');
+      assert.include(result.domains, 'www.yet_another_example.com');
+      assert.include(result.domains, 'sample-hiaac-heroku-app.herokuapp.com');
+      assert.notInclude(result.domains, 'www.another_example.com');
       done();
     }, done);
   });

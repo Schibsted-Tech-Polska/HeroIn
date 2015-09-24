@@ -41,6 +41,7 @@ var stubHerokuClient = {
           stubHerokuClient._app.region = config.region || 'eu';
           stubHerokuClient._app.maintenance = config.maintenance || false;
           stubHerokuClient._app.stack = config.stack || 'cedar-14';
+          stubHerokuClient._app.domains.push(config.name + '.herokuapp.com');
           return Promise.resolve(config);
         },
         delete: function () {
