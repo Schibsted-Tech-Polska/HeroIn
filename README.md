@@ -35,27 +35,23 @@ What parts of Heroku infrastructure are supported (create, update, delete, expor
 - collaborators
 - features (e.g. preboot, log-runtime-metrics)
 - dyno formation (aka. dyno scaling)
-- log drains (export)
+- log drains 
+- domains
 
 What needs to be added:
 ------
 - advanced addons config (e.g. heroku redis timeout, logentries alert, deploy hooks) - emailed addon providers to add some missing injection points
-- log drain update/delete
-- domains
 
 
 Gotchas:
 ------
-- removing env vars requires setting them to null
 - some addons don't support changing plans
 - some parts of Heroku API are flaky and return 200 before they make sure the resources are provisioned 
 - formation should be applied before features as preboot feature doesn't work on free formation
-- heroku API for addons doesn't support config updates only plan updates
+- heroku API for addons doesn't support config updates only plan updates (addons configs can only be updates with a toolbelt)
 - all config for an addon should be set when creating a new addon
 
 TODO: 
-- custom domains - update
-- refactor result[0-7]
 - support for the new pipelines - pipelines are managed by apps and gocd
 - dyno formation - check corner cases
 - refactor in memory client
