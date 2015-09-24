@@ -163,7 +163,7 @@ var stubHerokuClient = {
             }
           };
         },
-        domains: function() {
+        domains: function(domain) {
           return {
             list: function() {
               var array = stubHerokuClient._app.domains.map(function(hostname) {
@@ -175,6 +175,10 @@ var stubHerokuClient = {
             },
             create: function(config) {
               stubHerokuClient._app.domains.push(config.hostname);
+              return Promise.resolve();
+            },
+            delete: function() {
+              stubHerokuClient._app.domains = _.without(stubHerokuClient._app.domains, domain);
               return Promise.resolve();
             }
           };
