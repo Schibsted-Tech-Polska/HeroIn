@@ -54,7 +54,7 @@ Gotchas:
 - all config for an addon should be set when creating a new addon
 
 TODO: 
-- custom domains
+- custom domains - update
 - refactor result[0-7]
 - support for the new pipelines - pipelines are managed by apps and gocd
 - dyno formation - check corner cases

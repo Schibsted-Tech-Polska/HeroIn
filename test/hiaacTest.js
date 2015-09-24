@@ -2,8 +2,8 @@ var chai = require('chai'),
   assert = chai.assert,
   hiaac = require('../lib/hiaac');
 var _ = require('lodash');
-var inMemoryHeroku = require('./in_memory_heroku_client');
-var Heroku = require('heroku-client');
+var inMemoryHeroku = require('./inMemoryHerokuClient');
+//var Heroku = require('heroku-client');
 
 function setup_heroku_client() {
   return inMemoryHeroku();
