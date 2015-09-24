@@ -70,7 +70,6 @@ TODO:
 - what happens when preboot is not available for a given tier
 - default host function
 - when everything is ready upgrade to ES6
-- prune mode: removes what's not explicitly listed except from addon related stuff
 - add executable script to run it as a binary from a command line
 - try hamjest
 - try point free style with compose

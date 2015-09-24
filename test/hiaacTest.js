@@ -136,7 +136,7 @@ describe('hiaac', function () {
       name: 'sample-hiaac-heroku-app',
       region: 'us', // this one should be filtered out
       maintenance: true,
-      build_stack: 'cedar-14'
+      stack: 'cedar-12'
     };
     configurator(app_configuration).then(function () {
       return configurator(updated_app_configuration);
@@ -145,7 +145,7 @@ describe('hiaac', function () {
     }).then(function (result) {
       assert.equal(result.region, 'eu');
       assert.equal(result.maintenance, true);
-      assert.equal(result.build_stack, 'cedar-14');
+      assert.equal(result.stack, 'cedar-12');
       done();
     }).catch(done);
   });

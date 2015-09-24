@@ -28,8 +28,8 @@ var stubHerokuClient = {
           }
         },
         update: function (config) {
-          if (config.stack) {
-            stubHerokuClient._app.stack = config.stack;
+          if (config.build_stack) {
+            stubHerokuClient._app.stack = config.build_stack;
           }
           if (config.maintenance) {
             stubHerokuClient._app.maintenance = config.maintenance;
