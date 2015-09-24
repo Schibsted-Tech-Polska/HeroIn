@@ -55,9 +55,7 @@ Gotchas:
 
 TODO: 
 - support for the new pipelines - pipelines are managed by apps and gocd
-- nuke non addon, not listed config vars
 - dyno formation - check corner cases
-- debug mode that prints every step to the console and regular mode that just prints step names
 - refactor in memory client
 - performance improvement: check if addon, collaborator changed and avoid API calls
 - hamjest assertion that are readable - basic asserts from chai are useless
