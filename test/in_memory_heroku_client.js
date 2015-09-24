@@ -2,9 +2,9 @@ var _ = require('lodash');
 
 
 var stubHerokuClient = {
-    _app: {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}, log_drains: []},
+    _app: {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}, log_drains: [], domains: []},
     clean: function () {
-      stubHerokuClient._app = {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}, log_drains: []};
+      stubHerokuClient._app = {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}, log_drains: [], domains: []};
     },
     apps: function (app_name) {
       return {
@@ -160,6 +160,22 @@ var stubHerokuClient = {
             },
             batchUpdate: function (config) {
 
+            }
+          };
+        },
+        domains: function() {
+          return {
+            list: function() {
+              var array = stubHerokuClient._app.domains.map(function(hostname) {
+                return {
+                  hostname: hostname
+                };
+              });
+              return Promise.resolve(array);
+            },
+            create: function(config) {
+              stubHerokuClient._app.domains.push(config.hostname);
+              return Promise.resolve();
             }
           };
         },

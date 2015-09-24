@@ -18,10 +18,9 @@ describe('hiaac', function () {
     this.timeout(10000);
 
     configurator.delete('sample-hiaac-heroku-app').then(function () {
-        console.log('deleted app');
         done();
       }, function (err) {
-        console.log('could not delete app ', err);
+        console.error('could not delete app ', err);
         done();
       }
     );
@@ -48,7 +47,7 @@ describe('hiaac', function () {
     }).then(function (msg) {
       assert.notOk(msg, 'app should not exist');
     }, function (err) {
-      console.log('Error', JSON.stringify(err));
+      console.error('Error', JSON.stringify(err));
       assert.equal(err.statusCode, 404);
       done();
     }).catch(done);
@@ -82,13 +81,13 @@ describe('hiaac', function () {
       formation: [
         {process: 'web', quantity: 1, size: 'Free'}
       ],
-      log_drains: ['http://stats.example.com:7000']
+      log_drains: ['http://stats.example.com:7000'],
+      domains: ['http://example.com']
     };
 
     configurator(app_configuration).then(function () {
       return configurator.export(app_configuration.name);
     }).then(function (result) {
-      console.log('Created app', result);
       assert.equal(result.name, 'sample-hiaac-heroku-app');
       assert.equal(result.region, 'eu');
       assert.isUndefined(result.ignore_me);
@@ -100,6 +99,7 @@ describe('hiaac', function () {
       assert.deepEqual(result.addons.logentries, {plan: 'logentries:le_tryit'});
       assert.deepEqual(result.addons.librato, {plan: 'librato:development'});
       assert.include(result.log_drains, 'http://stats.example.com:7000');
+      assert.include(result.domains, 'http://example.com');
       done();
     }).catch(done);
   });
@@ -212,7 +212,6 @@ describe('hiaac', function () {
     };
 
     updateTest(app_configuration, updated_app_configuration, function (result) {
-      console.log(result);
       assert.deepEqual(result.addons, {
         logentries: {plan: 'logentries:le_tryit'},
         librato: {plan: 'librato:development'}

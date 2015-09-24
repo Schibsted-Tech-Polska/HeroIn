@@ -54,14 +54,13 @@ Gotchas:
 - all config for an addon should be set when creating a new addon
 
 TODO: 
+- custom domains
+- refactor result[0-7]
 - support for the new pipelines - pipelines are managed by apps and gocd
 - dyno formation - check corner cases
 - refactor in memory client
 - performance improvement: check if addon, collaborator changed and avoid API calls
-- hamjest assertion that are readable - basic asserts from chai are useless
-- tests for every supported feature
 - heroku redis settings (create from API, update from command line)
-- exit code 1 on failure and report what failed
 - native extensions: labs, heroku redis, logentries
 - proper env management: remove everything that's not explicitly listed or comes from addon (config_vars in addon info)
 - check name specified precondition
@@ -72,9 +71,9 @@ TODO:
 - more detailed unit tests for individual components updates
 - pipelines support
 - stack (create) vs build_stack (update)
-- custom domains
 - what happens when preboot is not available for a given tier
 - default host function
 - when everything is ready upgrade to ES6
 - prune mode: removes what's not explicitly listed except from addon related stuff
 - add executable script to run it as a binary from a command line
+- try hamjest
