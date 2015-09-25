@@ -20,10 +20,10 @@ Principles:
 ------
 - don't reinvent config names, use original names from Heroku API
 - compact format so that you can describe everything in one text file
-- let Heroku API maintain the state of your infrastructure (no local files)
-- all changes should go through those files and your manual changes will be overriden 
-- avoid duplication in configs (sane inheritance)
-- use JS for configuration (you can access process.env.VAR and use mixins)
+- let Heroku API maintain the state of your infrastructure (no local files as in terraform)
+- all changes should go through those files and your manual changes will be overridden 
+- avoid duplication in configs 
+- use JS for configuration (you can access process.env.VAR and merge configs using language constructs and libs)
 
 What parts of Heroku infrastructure are supported (create, update, delete, export):
 ------
@@ -38,7 +38,7 @@ What parts of Heroku infrastructure are supported (create, update, delete, expor
 
 What needs to be added:
 ------
-- advanced addons config (e.g. heroku redis timeout, logentries alert, deploy hooks) - emailed addon providers to add some missing injection points
+- advanced addons config (e.g. heroku redis timeout update, logentries alert) - emailed addon providers to add some missing injection points
 
 
 Gotchas:
@@ -46,7 +46,7 @@ Gotchas:
 - some addons don't support changing plans
 - some parts of Heroku API are flaky and return 200 before they make sure the resources are provisioned 
 - formation should be applied before features as preboot feature doesn't work on free formation
-- heroku API for addons doesn't support config updates only plan updates (addons configs can only be updates with a toolbelt)
+- heroku API for addons doesn't support config updates only plan updates (addons configs can only be updated with a toolbelt)
 - all config for an addon should be set when creating a new addon
 
 TODO: 
