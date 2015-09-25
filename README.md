@@ -1,4 +1,4 @@
-Heroku Infrastructure As A Code (hiacc)
+Heroku Infrastructure As A Code (hiaac)
 -------
 
 [![Build Status](https://travis.schibsted.io/snt/hiaac.svg?token=rZVkndZyUmroq3r7Jeyx&branch=master)](https://travis.schibsted.io/snt/hiaac)
@@ -52,13 +52,16 @@ Gotchas:
 - all config for an addon should be set when creating a new addon
 
 TODO: 
+- run appFeature after formation
+- consistent naming: update vs configure
+- symmetric api - for update and read
+- magical arrays into explicit vars
 - support for the new pipelines - pipelines are managed by apps and gocd
 - dyno formation - check corner cases
 - refactor in memory client
 - performance improvement: check if addon, collaborator changed and avoid API calls
 - heroku redis settings (create from API, update from command line)
 - native extensions: labs, heroku redis, logentries
-- proper env management: remove everything that's not explicitly listed or comes from addon (config_vars in addon info)
 - check name specified precondition
 - custom extensions for addons: logentries alerts
 - advanced addon management - delete old addon when can't be upgraded but prompt a user. 
@@ -66,7 +69,6 @@ TODO:
 - create integration test that run against real heroku. one big create. one big update. one big export.
 - more detailed unit tests for individual components updates
 - pipelines support
-- stack (create) vs build_stack (update)
 - what happens when preboot is not available for a given tier
 - default host function
 - when everything is ready upgrade to ES6
@@ -74,3 +76,4 @@ TODO:
 - try hamjest
 - try point free style with compose
 - delete 404 should reject promise
+- break e2e tests into more focused areas and individual tests
