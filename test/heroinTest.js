@@ -1,23 +1,16 @@
 var chai = require('chai'),
   assert = chai.assert,
-  heroin = require('../lib/heroin');
-var _ = require('lodash');
-var inMemoryHeroku = require('./inMemoryHerokuClient');
-//var Heroku = require('heroku-client');
+  heroin = require('../lib/heroin'),
+  _ = require('lodash'),
+  inMemoryHerokuClient = require('./inMemoryHerokuClient');
 
-function setup_heroku_client() {
-  return inMemoryHeroku();
-  //return new Heroku({token: process.env.HEROKU_API_TOKEN, debug: true});
-}
+var appName = 'sample-heroku-app';
 
-describe('hiaac', function () {
+describe('HeroIn', function () {
 
   beforeEach(function (done) {
-    var heroku_client = setup_heroku_client();
-    var configurator = heroin(heroku_client);
-    this.timeout(10000);
-
-    configurator.delete('sample-hiaac-heroku-app').then(function () {
+    var configurator = heroin(inMemoryHerokuClient());
+    configurator.delete(appName).then(function () {
         done();
       }, function (err) {
         console.error('could not delete app ', err);
@@ -35,25 +28,21 @@ describe('hiaac', function () {
     }
   });
 
-  it('should prompt you for an app name', function() {
+  it('should prompt you for an app name', function () {
     try {
-      var configurator = heroin(setup_heroku_client());
-
+      var configurator = heroin(inMemoryHerokuClient());
       configurator({});
-    } catch(e) {
+    } catch (e) {
       assert.equal(e.message, 'Please specify app name');
     }
   });
 
   it('should delete app by name', function (done) {
-    var heroku_client = setup_heroku_client();
-    var configurator = heroin(heroku_client);
-    this.timeout(10000);
-
-    configurator({name: 'sample-hiaac-heroku-app'}).then(function () {
-      return configurator.delete('sample-hiaac-heroku-app');
+    var configurator = heroin(inMemoryHerokuClient());
+    configurator({name: appName}).then(function () {
+      return configurator.delete(appName);
     }).then(function () {
-      return configurator.info('sample-hiaac-heroku-app');
+      return configurator.info(appName);
     }).then(function (msg) {
       assert.notOk(msg, 'app should not exist');
     }, function (err) {
@@ -64,12 +53,9 @@ describe('hiaac', function () {
   });
 
   it('should create heroku app', function (done) {
-    var heroku_client = setup_heroku_client();
-    var configurator = heroin(heroku_client);
-    this.timeout(15000);
-
-    var app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var configurator = heroin(inMemoryHerokuClient());
+    var appConfiguration = {
+      name: appName,
       region: 'eu',
       ignore_me: 'to_be_ignored',
       config_vars: {
@@ -95,10 +81,10 @@ describe('hiaac', function () {
       domains: ['http://example.com']
     };
 
-    configurator(app_configuration).then(function () {
-      return configurator.export(app_configuration.name);
+    configurator(appConfiguration).then(function () {
+      return configurator.export(appConfiguration.name);
     }).then(function (result) {
-      assert.equal(result.name, 'sample-hiaac-heroku-app');
+      assert.equal(result.name, appName);
       assert.equal(result.region, 'eu');
       assert.isUndefined(result.ignore_me);
       assert.equal(result.config_vars.NODE_ENV, 'production');
@@ -110,22 +96,22 @@ describe('hiaac', function () {
       assert.deepEqual(result.addons.librato, {plan: 'librato:development'});
       assert.include(result.log_drains, 'http://stats.example.com:7000');
       assert.include(result.domains, 'http://example.com');
-      assert.include(result.domains, 'sample-hiaac-heroku-app.herokuapp.com'); // default domain
+      assert.include(result.domains, 'sample-heroku-app.herokuapp.com'); // default domain
       done();
     }).catch(done);
   });
 
   it('should manage collaborators', function (done) {
-    var app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var appConfiguration = {
+      name: appName,
       collaborators: ['miroslaw.kucharzyk@schibsted.pl', 'kwasniewski.mateusz@gmail.com']
     };
-    var updated_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var updatedConfiguration = {
+      name: appName,
       collaborators: ['krystian.jarmicki@schibsted.pl', 'kwasniewski.mateusz@gmail.com']
     };
 
-    updateTest(app_configuration, updated_configuration, function (result) {
+    updateTest(appConfiguration, updatedConfiguration, function (result) {
       assert.include(result.collaborators, 'krystian.jarmicki@schibsted.pl');
       assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
       assert.notInclude(result.collaborators, 'miroslaw.kucharzyk@schibsted.pl');
@@ -134,24 +120,21 @@ describe('hiaac', function () {
   });
 
   it('should update basic app info', function (done) {
-    var heroku_client = setup_heroku_client();
-    var configurator = heroin(heroku_client);
-    this.timeout(10000);
-
-    var app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var configurator = heroin(inMemoryHerokuClient());
+    var appConfiguration = {
+      name: appName,
       region: 'eu'
     };
-    var updated_app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var updatedConfiguration = {
+      name: appName,
       region: 'us', // this one should be filtered out
       maintenance: true,
       stack: 'cedar-12'
     };
-    configurator(app_configuration).then(function () {
-      return configurator(updated_app_configuration);
+    configurator(appConfiguration).then(function () {
+      return configurator(updatedConfiguration);
     }).then(function () {
-      return configurator.export(app_configuration.name);
+      return configurator.export(appConfiguration.name);
     }).then(function (result) {
       assert.equal(result.region, 'eu');
       assert.equal(result.maintenance, true);
@@ -161,28 +144,28 @@ describe('hiaac', function () {
   });
 
   it('should update config vars', function (done) {
-    var app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var appConfiguration = {
+      name: appName,
       config_vars: {
         FEATURE_TOGGLE_A: 'A'
       }
     };
-    var updated_app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var updatedConfiguration = {
+      name: appName,
       config_vars: {
         FEATURE_TOGGLE_B: 'B'
       }
     };
 
-    updateTest(app_configuration, updated_app_configuration, function (result) {
+    updateTest(appConfiguration, updatedConfiguration, function (result) {
       assert.deepEqual(result.config_vars, {FEATURE_TOGGLE_B: 'B'});
       done();
     }, done);
   });
 
   it('should update addons pricing option', function (done) {
-    var app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var appConfiguration = {
+      name: appName,
       addons: {
         logentries: {
           plan: 'logentries:le_tryit'
@@ -190,8 +173,8 @@ describe('hiaac', function () {
       }
     };
 
-    var updated_app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var updatedConfiguration = {
+      name: appName,
       addons: {
         logentries: {
           plan: 'logentries:le_entry'
@@ -199,19 +182,19 @@ describe('hiaac', function () {
       }
     };
 
-    updateTest(app_configuration, updated_app_configuration, function (result) {
+    updateTest(appConfiguration, updatedConfiguration, function (result) {
       assert.deepEqual(result.addons, {logentries: {plan: 'logentries:le_entry'}});
       done();
     }, done);
   });
 
   it('should add a new addon when updating', function (done) {
-    var app_configuration = {
-      name: 'sample-hiaac-heroku-app'
+    var appConfiguration = {
+      name: appName
     };
 
-    var updated_app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var updatedConfiguration = {
+      name: appName,
       addons: {
         logentries: {
           plan: 'logentries:le_tryit'
@@ -222,7 +205,7 @@ describe('hiaac', function () {
       }
     };
 
-    updateTest(app_configuration, updated_app_configuration, function (result) {
+    updateTest(appConfiguration, updatedConfiguration, function (result) {
       assert.deepEqual(result.addons, {
         logentries: {plan: 'logentries:le_tryit'},
         librato: {plan: 'librato:development'}
@@ -232,8 +215,8 @@ describe('hiaac', function () {
   });
 
   it('should delete addons that are not listed explicitly', function (done) {
-    var app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var appConfiguration = {
+      name: appName,
       addons: {
         logentries: {
           plan: 'logentries:le_tryit'
@@ -244,8 +227,8 @@ describe('hiaac', function () {
       }
     };
 
-    var updated_app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var updatedConfiguration = {
+      name: appName,
       addons: {
         librato: {
           plan: 'librato:development'
@@ -253,7 +236,7 @@ describe('hiaac', function () {
       }
     };
 
-    updateTest(app_configuration, updated_app_configuration, function (result) {
+    updateTest(appConfiguration, updatedConfiguration, function (result) {
       assert.deepEqual(result.addons, {
         librato: {plan: 'librato:development'}
       });
@@ -262,17 +245,17 @@ describe('hiaac', function () {
   });
 
   it('should delete non addon logdrains that are not listed explicitly', function (done) {
-    var app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var appConfiguration = {
+      name: appName,
       log_drains: ['http://stats.example.com:7000', 'http://stats.example.com:7001']
     };
 
-    var updated_app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var updatedConfiguration = {
+      name: appName,
       log_drains: ['http://stats.example.com:7000']
     };
 
-    updateTest(app_configuration, updated_app_configuration, function (result) {
+    updateTest(appConfiguration, updatedConfiguration, function (result) {
       assert.include(result.log_drains, 'http://stats.example.com:7000');
       assert.notInclude(result.log_drains, 'http://stats.example.com:7001');
       done();
@@ -280,19 +263,19 @@ describe('hiaac', function () {
   });
 
   it('should update domains', function (done) {
-    var app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var appConfiguration = {
+      name: appName,
       domains: ['www.example.com', 'www.another_example.com']
     };
 
-    var updated_app_configuration = {
-      name: 'sample-hiaac-heroku-app',
+    var updatedConfiguration = {
+      name: appName,
       domains: ['www.example.com', 'www.yet_another_example.com']
     };
 
-    updateTest(app_configuration, updated_app_configuration, function (result) {
+    updateTest(appConfiguration, updatedConfiguration, function (result) {
       assert.include(result.domains, 'www.yet_another_example.com');
-      assert.include(result.domains, 'sample-hiaac-heroku-app.herokuapp.com');
+      assert.include(result.domains, 'sample-heroku-app.herokuapp.com');
       assert.notInclude(result.domains, 'www.another_example.com');
       done();
     }, done);
@@ -302,9 +285,7 @@ describe('hiaac', function () {
 });
 
 function updateTest(original_configuration, updated_configuration, success, error) {
-  var heroku_client = setup_heroku_client();
-  var configurator = heroin(heroku_client);
-
+  var configurator = heroin(inMemoryHerokuClient());
   configurator(original_configuration).then(function () {
     return configurator(updated_configuration);
   }).then(function () {
