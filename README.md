@@ -1,4 +1,4 @@
-Heroku Infrastructure As A Code (hiaac)
+Heroku Infrastructure As A Code (HeroIn)
 -------
 
 [![Build Status](https://travis.schibsted.io/snt/hiaac.svg?token=rZVkndZyUmroq3r7Jeyx&branch=master)](https://travis.schibsted.io/snt/hiaac)
