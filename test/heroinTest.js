@@ -1,6 +1,6 @@
 var chai = require('chai'),
   assert = chai.assert,
-  hiaac = require('../lib/hiaac');
+  heroin = require('../lib/main');
 var _ = require('lodash');
 var inMemoryHeroku = require('./inMemoryHerokuClient');
 //var Heroku = require('heroku-client');
@@ -14,7 +14,7 @@ describe('hiaac', function () {
 
   beforeEach(function (done) {
     var heroku_client = setup_heroku_client();
-    var configurator = hiaac(heroku_client);
+    var configurator = heroin(heroku_client);
     this.timeout(10000);
 
     configurator.delete('sample-hiaac-heroku-app').then(function () {
@@ -28,7 +28,7 @@ describe('hiaac', function () {
 
   it('should prompt you for an API key', function () {
     try {
-      var configurator = hiaac();
+      var configurator = heroin();
       assert.ok(false, 'should not allow empty token');
     } catch (e) {
       assert.equal(e.message, 'Please set env var for HEROKU_API_TOKEN or specify a client library');
@@ -37,7 +37,7 @@ describe('hiaac', function () {
 
   it('should delete app by name', function (done) {
     var heroku_client = setup_heroku_client();
-    var configurator = hiaac(heroku_client);
+    var configurator = heroin(heroku_client);
     this.timeout(10000);
 
     configurator({name: 'sample-hiaac-heroku-app'}).then(function () {
@@ -55,7 +55,7 @@ describe('hiaac', function () {
 
   it('should create heroku app', function (done) {
     var heroku_client = setup_heroku_client();
-    var configurator = hiaac(heroku_client);
+    var configurator = heroin(heroku_client);
     this.timeout(15000);
 
     var app_configuration = {
@@ -125,7 +125,7 @@ describe('hiaac', function () {
 
   it('should update basic app info', function (done) {
     var heroku_client = setup_heroku_client();
-    var configurator = hiaac(heroku_client);
+    var configurator = heroin(heroku_client);
     this.timeout(10000);
 
     var app_configuration = {
@@ -293,7 +293,7 @@ describe('hiaac', function () {
 
 function updateTest(original_configuration, updated_configuration, success, error) {
   var heroku_client = setup_heroku_client();
-  var configurator = hiaac(heroku_client);
+  var configurator = heroin(heroku_client);
 
   configurator(original_configuration).then(function () {
     return configurator(updated_configuration);
