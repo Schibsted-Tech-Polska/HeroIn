@@ -35,7 +35,7 @@ describe('config vars deletion', function () {
       }
     };
 
-    configVars(app).update({"FOO": "test"}).then(function() {
+    configVars(app).configure({"FOO": "test"}).then(function() {
       return configVars(app).info();
     }).then(function(configSentToHeroku) {
       assert.equal(configSentToHeroku.FOO, "test");
