@@ -50,7 +50,6 @@ Gotchas:
 - all config for an addon should be set when creating a new addon
 
 TODO: 
-- magical arrays into explicit vars
 - support for the new pipelines - pipelines are managed by apps and gocd
 - dyno formation - check corner cases
 - refactor in memory client
