@@ -35,6 +35,16 @@ describe('hiaac', function () {
     }
   });
 
+  it('should prompt you for an app name', function() {
+    try {
+      var configurator = heroin(setup_heroku_client());
+
+      configurator({});
+    } catch(e) {
+      assert.equal(e.message, 'Please specify app name');
+    }
+  });
+
   it('should delete app by name', function (done) {
     var heroku_client = setup_heroku_client();
     var configurator = heroin(heroku_client);

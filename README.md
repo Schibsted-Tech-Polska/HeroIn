@@ -51,23 +51,17 @@ Gotchas:
 
 TODO: 
 - support for the new pipelines - pipelines are managed by apps and gocd
-- dyno formation - check corner cases
 - refactor in memory client
 - performance improvement: check if addon, collaborator changed and avoid API calls
 - heroku redis settings (create from API, update from command line)
 - native extensions: labs, heroku redis, logentries
-- check name specified precondition
 - custom extensions for addons: logentries alerts
 - advanced addon management - delete old addon when can't be upgraded but prompt a user. 
 - perf improvement - don't update when value doesn't change e.g. addon upgrade
-- create integration test that run against real heroku. one big create. one big update. one big export.
-- more detailed unit tests for individual components updates
-- pipelines support
-- what happens when preboot is not available for a given tier
 - default host function
 - when everything is ready upgrade to ES6
 - add executable script to run it as a binary from a command line
 - try hamjest
 - try point free style with compose
-- delete 404 should reject promise
+- create integration test that run against real heroku. one big create. one big update. one big export.
 - break e2e tests into more focused areas and individual tests
