@@ -1,6 +1,6 @@
 var chai = require('chai'),
   assert = chai.assert,
-  heroin = require('../lib/main');
+  heroin = require('../lib/heroin');
 var _ = require('lodash');
 var inMemoryHeroku = require('./inMemoryHerokuClient');
 //var Heroku = require('heroku-client');
