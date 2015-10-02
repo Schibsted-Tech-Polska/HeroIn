@@ -51,7 +51,6 @@ Gotchas:
 
 TODO: 
 - support for the new pipelines - pipelines are managed by apps and gocd
-- refactor in memory client
 - performance improvement: check if addon, collaborator changed and avoid API calls
 - heroku redis settings (create from API, update from command line)
 - native extensions: labs, heroku redis, logentries
@@ -65,3 +64,4 @@ TODO:
 - try point free style with compose
 - create integration test that run against real heroku. one big create. one big update. one big export.
 - break e2e tests into more focused areas and individual tests
+- refactor in memory client
