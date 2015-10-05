@@ -2,7 +2,7 @@
   "name": "hiaac",
   "version": "1.0.0",
   "description": "Heroku Infrastructure As A Code",
-  "main": "index.js",
+  "main": "lib/heroin.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --recursive"
   },
