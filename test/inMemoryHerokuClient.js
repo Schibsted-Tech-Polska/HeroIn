@@ -204,6 +204,9 @@ var stubHerokuClient = {
             return Promise.resolve(array);
           },
           create: function (config) {
+            if(stubHerokuClient._app.log_drains.indexOf(config.url) !== -1) {
+              return Promise.reject('Url has already been taken');
+            }
             stubHerokuClient._app.log_drains.push(config.url);
             return Promise.resolve();
           },
