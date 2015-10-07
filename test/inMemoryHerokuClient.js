@@ -100,7 +100,10 @@ var stubHerokuClient = {
                 plan: {
                   name: addonConfig.plan
                 },
-                id: name
+                id: name,
+                addon_service: {
+                  name: name
+                }
               };
             });
             return Promise.resolve(array);

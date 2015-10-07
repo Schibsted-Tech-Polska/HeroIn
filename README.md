@@ -38,12 +38,14 @@ What parts of Heroku infrastructure are supported (create, update, delete, expor
 
 What needs to be added:
 ------
-- advanced addons config (e.g. heroku redis timeout update, logentries alert) - emailed addon providers to add some missing injection points
+- advanced addons config (e.g. heroku redis timeout update, logentries alert, librato settings) - emailed addon providers to add some missing injection points
 
 
 Gotchas:
 ------
 - some addons don't support changing plans
+- paid addons can be only set by the app owner
+- we can't export addon config as it's unavailable through the Heroku API
 - some parts of Heroku API are flaky and return 200 before they make sure the resources are provisioned 
 - formation should be applied before features as preboot feature doesn't work on free formation
 - heroku API for addons doesn't support config updates only plan updates (addons configs can only be updated with a toolbelt)

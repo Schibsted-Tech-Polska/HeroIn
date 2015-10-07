@@ -244,6 +244,7 @@ describe('HeroIn', function () {
     }, done);
   });
 
+
   it('should delete non addon logdrains that are not listed explicitly', function (done) {
     var appConfiguration = {
       name: appName,
