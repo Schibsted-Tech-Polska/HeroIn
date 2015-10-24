@@ -24,6 +24,7 @@ var stubHerokuClient = {
               "name": stubHerokuClient._app.region
             },
             "git_url": stubHerokuClient._app.git_url,
+            "web_url": stubHerokuClient._app.web_url,
             "maintenance": stubHerokuClient._app.maintenance,
             "stack": {
               "name": stubHerokuClient._app.stack
@@ -52,6 +53,7 @@ var stubHerokuClient = {
         stubHerokuClient._app.stack = config.stack || 'cedar-14';
         stubHerokuClient._app.domains.push(config.name + '.herokuapp.com');
         stubHerokuClient._app.git_url = "git@heroku.com:"+config.name+".git";
+        stubHerokuClient._app.web_url = "https://"+config.name+".herokuapp.com/";
 
         return Promise.resolve(config);
       },
