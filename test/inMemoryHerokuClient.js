@@ -66,7 +66,7 @@ var stubHerokuClient = {
           info: function () {
             var addonConfig = stubHerokuClient._app.addons[id];
             if (!addonConfig) {
-              return Promise.reject();
+              return Promise.reject({statusCode: 404, body: {id: 'not_found'}});
             }
             var name = addonConfig.plan.split(':')[0];
             var herokuAddonInfo = {
