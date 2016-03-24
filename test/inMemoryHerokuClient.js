@@ -228,6 +228,17 @@ var stubHerokuClient = {
         };
       }
     };
+  },
+  organizations: function () {
+    return {
+      apps: function (app_name) {
+        var apps = stubHerokuClient.apps(app_name);
+        return {
+          create: apps.create,
+          info: apps.info
+        };
+      }
+    };
   }
 };
 
