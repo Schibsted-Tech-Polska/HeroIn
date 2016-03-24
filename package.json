@@ -4,7 +4,7 @@
   "description": "Heroku Infrastructure As A Code",
   "main": "lib/heroin.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --recursive"
+    "test": "mocha --recursive"
   },
   "keywords": [
     "heroku",
@@ -14,12 +14,12 @@
   "author": "Mateusz Kwasniewski <mateusz.kwasniewski@schibsted.pl>",
   "license": "MIT",
   "devDependencies": {
-    "chai": "3.2.0",
-    "jshint": "^2.8.0",
-    "mocha": "2.3.2"
+    "chai": "3.5.0",
+    "jshint": "2.8.0",
+    "mocha": "2.4.5"
   },
   "dependencies": {
-    "heroku-client": "2.2.2",
+    "heroku-client": "2.4.3",
     "lodash": "3.10.1"
   }
 }

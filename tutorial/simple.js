@@ -1,8 +1,9 @@
-var heroin = require('heroin-js');
+//var heroin = require('heroin-js');
+var heroin = require('../lib/heroin');
 
 var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: false});
 
-configurator.export('widget-farticle-saleposters').then(function(result) {
+configurator.export('simple-widget').then(function(result) {
 	console.log(result);
 });
 
