@@ -16,6 +16,42 @@ Why:
 - clicking does not scale
 - clicking is not auditable
 
+1 minute tutorial: create/update app:
+------
+```bash
+npm install heroin-js
+```
+```bash
+export HEROKU_API_TOKEN=your_heroku_api_token
+```
+
+create file `heroku.js`
+```javascript
+var heroin = require('heroin-js');
+
+var configurator = heroin(process.env.HEROKU_API_TOKEN);
+
+configurator({name: 'my-test-widget'});
+```
+
+```bash
+node heroku.js
+```
+
+
+1 minute tutorial: export app
+------
+
+```javascript
+var heroin = require('heroin-js');
+
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: false});
+
+configurator.export('my-test-widget').then(function(result) {
+	console.log(result);
+});
+```
+
 Principles:
 ------
 - don't reinvent config names, use original names from Heroku API
@@ -35,6 +71,47 @@ What parts of Heroku infrastructure are supported (create, update, delete, expor
 - dyno formation (aka. dyno scaling)
 - log drains 
 - domains
+
+Sample Configuration
+------
+```javascript
+var sampleConfiguration = {
+    name: 'myapp',
+    region: 'eu',
+    maintenance: false,
+    stack: 'cedar-14',
+    config_vars: {
+        FEATURE_X_DISABLED: 'true',
+        DB_PASSWORD: process.env.SECURE_VAR_FROM_CI_SERVER,
+        NODE_ENV: 'production'
+    },
+    addons: {
+        sumologic: {plan: 'sumologic:test'},
+        librato: {plan: 'librato:nickel'},
+        'heroku-redis': {plan: 'heroku-redis:premium-0'},
+        logentries: {plan: 'logentries:le_starter'}
+    },
+    collaborators: [
+        'someone@example.com',
+        'someonelse@example.com',
+    ],
+    features: {
+        'runtime-dyno-metadata': {enabled: false},
+        'log-runtime-metrics': {enabled: true},
+        'http-session-affinity': {enabled: false},
+        preboot: {enabled: true},
+        'http-shard-header': {enabled: false},
+        'http-end-to-end-continue': {enabled: false}
+    },
+    formation: [{process: 'web', quantity: 2, size: '1X'}],
+    log_drains: [
+        'https://logdrain.com:5000',
+        'http://stats1.example.com:7000',
+        'syslog://api.logentries.com:9000'
+    ],
+    domains: ['mydomain.com', 'myapp.herokuapp.com']
+};
+```
 
 What needs to be added:
 ------
