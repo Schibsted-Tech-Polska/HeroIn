@@ -4,7 +4,8 @@
   "description": "Heroku Infrastructure As A Code",
   "main": "lib/heroin.js",
   "scripts": {
-    "test": "mocha --recursive"
+    "test": "mocha --recursive",
+    "lint": "jshint --exclude=node_modules **/*.js"
   },
   "keywords": [
     "heroku",
