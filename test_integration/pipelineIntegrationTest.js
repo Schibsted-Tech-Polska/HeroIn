@@ -6,14 +6,20 @@ var chai = require('chai'),
 var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: false});
 var pipelineName = 'sample-heroin-pipeline';
 var reviewApp = 'sample-heroin-review-app';
+var newReviewApp = 'new-sample-heroin-review-app';
 var developmentApp = 'sample-heroin-development-app';
 var stagingApp = 'sample-heroin-staging-app';
 var productionApp = 'sample-heroin-production-app';
-var apps = [reviewApp, developmentApp, stagingApp, productionApp];
+var apps = [reviewApp, newReviewApp, developmentApp, stagingApp, productionApp];
 
 var pipelineConfig = {
   name: pipelineName,
-  apps: {review: reviewApp, development: developmentApp, staging: stagingApp, production: productionApp}
+  apps: {review: reviewApp, development: developmentApp, staging: stagingApp}
+};
+
+var updatedPipelineConfig = {
+  name: pipelineName,
+  apps: {review: newReviewApp, staging: stagingApp, production: productionApp}
 };
 
 describe('HeroIn', function () {
@@ -43,6 +49,15 @@ describe('HeroIn', function () {
       }).
       then(function (actualPipelineConfig) {
         assert.deepEqual(actualPipelineConfig, pipelineConfig);
+      }).
+      then(function() {
+        return configurator.pipeline(updatedPipelineConfig);
+      }).
+      then(function() {
+        return configurator.pipeline(pipelineName);
+      }).
+      then(function (actualPipelineConfig) {
+        assert.deepEqual(actualPipelineConfig, updatedPipelineConfig);
       }).
       then(done).
       catch(done);
