@@ -3,13 +3,18 @@ var chai = require('chai'),
   heroin = require('../lib/heroin'),
   _ = require('lodash');
 
-var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: false});
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: true});
 var pipelineName = 'sample-heroin-pipeline';
 var reviewApp = 'sample-heroin-review-app';
 var developmentApp = 'sample-heroin-development-app';
 var stagingApp = 'sample-heroin-staging-app';
 var productionApp = 'sample-heroin-production-app';
 var apps = [reviewApp, developmentApp, stagingApp, productionApp];
+
+var pipelineConfig = {
+  name: pipelineName,
+  apps: {review: reviewApp, development: developmentApp, staging: stagingApp, production: productionApp}
+};
 
 describe('HeroIn', function () {
   beforeEach(function (done) {
@@ -31,16 +36,13 @@ describe('HeroIn', function () {
         map(configurator)
     ).
       then(function () {
-        return configurator.pipeline({
-          name: pipelineName,
-          apps: {review: reviewApp, development: developmentApp, staging: stagingApp, production: productionApp}
-        })
+        return configurator.pipeline(pipelineConfig)
       }).
       then(function () {
         return configurator.pipeline(pipelineName);
       }).
       then(function (actualPipelineConfig) {
-        assert.equal(actualPipelineConfig.name, pipelineName);
+        assert.deepEqual(actualPipelineConfig, pipelineConfig);
       }).
       then(done).
       catch(done);
