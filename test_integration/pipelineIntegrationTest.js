@@ -3,7 +3,7 @@ var chai = require('chai'),
   heroin = require('../lib/heroin'),
   _ = require('lodash');
 
-var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: true});
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: false});
 var pipelineName = 'sample-heroin-pipeline';
 var reviewApp = 'sample-heroin-review-app';
 var developmentApp = 'sample-heroin-development-app';
