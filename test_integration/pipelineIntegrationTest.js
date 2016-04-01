@@ -24,6 +24,8 @@ var updatedPipelineConfig = {
 
 describe('HeroIn', function () {
   beforeEach(function (done) {
+    this.timeout(20000);
+
     Promise.all(apps.map(configurator.delete)).then(function () {
       console.log('Deleted all test apps');
     }, function (err) {
@@ -32,7 +34,7 @@ describe('HeroIn', function () {
   });
 
   it('should provide full Heroku pipeline support', function (done) {
-    this.timeout(30000);
+    this.timeout(50000);
 
     Promise.all(
       apps.

@@ -44,7 +44,7 @@ var updatedAppConfig = {
 describe('HeroIn', function () {
 
   beforeEach(function (done) {
-    this.timeout(10000);
+    this.timeout(20000);
 
     configurator.delete(appName).then(function () {
         console.log('deleted app');
