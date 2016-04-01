@@ -285,11 +285,11 @@ describe('HeroIn', function () {
 
 });
 
-function updateTest(original_configuration, updated_configuration, success, error) {
+function updateTest(originalConfiguration, updatedConfiguration, success, error) {
   var configurator = heroin(inMemoryHerokuClient());
-  configurator(original_configuration).then(function () {
-    return configurator(updated_configuration);
+  configurator(originalConfiguration).then(function () {
+    return configurator(updatedConfiguration);
   }).then(function () {
-    return configurator.export(original_configuration.name);
+    return configurator.export(originalConfiguration.name);
   }).then(success).catch(error);
 }
