@@ -43,13 +43,34 @@ describe('HeroIn', function () {
       catch(done);
   });
 
+  it('should allow to create a new pipeline', function (done) {
+    var configurator = heroin(inMemoryHerokuClient());
+    var pipelineConfig = {
+      name: 'sample_pipeline',
+      apps: {production: 'sample_app'}
+    };
+    configurator.
+      pipeline(pipelineConfig).
+      then(function () {
+        return configurator.pipeline('sample_pipeline');
+      }).
+      then(function (actualPipelineConfig) {
+        assert.deepEqual(actualPipelineConfig, pipelineConfig);
+      }).
+      then(done).
+      catch(done);
+  });
+
   function inMemoryHerokuClient() {
     var herokuClient = {
       pipelinesList: {sample_pipeline: {id: 'sample_pipeline', name: 'sample_pipeline'}},
-      appsList: {sample_app_id: {name: 'sample_app'}},
+      appsList: {sample_app: {name: 'sample_app'}},
       couplings: [{
         app: {
-          id: 'sample_app_id',
+          id: 'sample_app',
+        },
+        pipeline: {
+          id: 'sample_pipeline'
         },
         stage: 'production'
       }],
@@ -62,6 +83,23 @@ describe('HeroIn', function () {
         }
       },
 
+      pipelineCouplings: function () {
+        return {
+          create: function (coupling) {
+            herokuClient.couplings.push({
+              app: {
+                id: coupling.app,
+              },
+              stage: coupling.stage,
+              pipeline: {
+                id: coupling.pipeline
+              }
+            });
+            return Promise.resolve();
+          }
+        }
+      },
+
       pipelines: function (name) {
         return {
           pipelineCouplings: function () {
@@ -70,6 +108,15 @@ describe('HeroIn', function () {
                 return Promise.resolve(herokuClient.couplings);
               }
             }
+          },
+          delete: function () {
+            delete herokuClient.pipelinesList[name]
+            return Promise.resolve();
+          },
+          create: function (pipelineConfig) {
+            var pipeline = {id: pipelineConfig.name, name: pipelineConfig.name};
+            herokuClient.pipelinesList[pipelineConfig.name] = pipeline;
+            return Promise.resolve(pipeline);
           },
           info: function () {
             return Promise.resolve(herokuClient.pipelinesList[name]);
