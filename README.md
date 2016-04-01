@@ -52,6 +52,24 @@ configurator.export('my-test-widget').then(function(result) {
 });
 ```
 
+1 minute tutorial: pipelines support
+------
+
+```javascript
+var heroin = require('heroin-js');
+
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: false});
+
+configurator.pipeline({
+  name: 'my-test-pipeline',
+  apps: {review: 'review-app', development: 'development-app', staging: 'staging-app', production: 'production-app'}
+})
+
+configurator.pipeline('my-test-pipeline').then(function(result) {
+	console.log(result);
+});
+```
+
 Principles:
 ------
 - don't reinvent config names, use original names from Heroku API
@@ -71,6 +89,7 @@ What parts of Heroku infrastructure are supported (create, update, delete, expor
 - dyno formation (aka. dyno scaling)
 - log drains 
 - domains
+- pipelines
 
 Sample Configuration
 ------
