@@ -44,7 +44,7 @@ describe('HeroIn', function () {
         map(configurator)
     ).
       then(function () {
-        return configurator.pipeline(pipelineConfig)
+        return configurator.pipeline(pipelineConfig);
       }).
       then(function () {
         return configurator.pipeline(pipelineName);

@@ -37,17 +37,21 @@ describe('HeroIn', function () {
     configurator.
       pipeline('sample_pipeline').
       then(function (pipelineConfig) {
-        assert.deepEqual({name: 'sample_pipeline', apps: {production: 'sample_app'}}, pipelineConfig);
+        assert.deepEqual({name: 'sample_pipeline', apps: {production: 'sample_app2'}}, pipelineConfig);
       }).
       then(done).
       catch(done);
   });
 
-  it('should allow to create a new pipeline', function (done) {
+  it('should allow to create/update pipelines', function (done) {
     var configurator = heroin(inMemoryHerokuClient());
     var pipelineConfig = {
       name: 'sample_pipeline',
-      apps: {production: 'sample_app'}
+      apps: {staging: 'sample_app1', production: 'sample_app2'}
+    };
+    var updatedPipelineConfig = {
+      name: 'sample_pipeline',
+      apps: {review: 'sample_app2', staging: 'sample_app1'}
     };
     configurator.
       pipeline(pipelineConfig).
@@ -57,6 +61,15 @@ describe('HeroIn', function () {
       then(function (actualPipelineConfig) {
         assert.deepEqual(actualPipelineConfig, pipelineConfig);
       }).
+      then(function() {
+        return configurator.pipeline(updatedPipelineConfig);
+      }).
+      then(function() {
+        return configurator.pipeline('sample_pipeline');
+      }).
+      then(function (actualPipelineConfig) {
+        assert.deepEqual(actualPipelineConfig, updatedPipelineConfig);
+      }).
       then(done).
       catch(done);
   });
@@ -64,10 +77,10 @@ describe('HeroIn', function () {
   function inMemoryHerokuClient() {
     var herokuClient = {
       pipelinesList: {sample_pipeline: {id: 'sample_pipeline', name: 'sample_pipeline'}},
-      appsList: {sample_app: {name: 'sample_app'}},
+      appsList: {sample_app1: {name: 'sample_app1'}, sample_app2: {name: 'sample_app2'}},
       couplings: [{
         app: {
-          id: 'sample_app',
+          id: 'sample_app2',
         },
         pipeline: {
           id: 'sample_pipeline'
@@ -80,7 +93,7 @@ describe('HeroIn', function () {
           info: function () {
             return Promise.resolve(herokuClient.appsList[appId]);
           }
-        }
+        };
       },
 
       pipelineCouplings: function () {
@@ -88,7 +101,7 @@ describe('HeroIn', function () {
           create: function (coupling) {
             herokuClient.couplings.push({
               app: {
-                id: coupling.app,
+                id: coupling.app
               },
               stage: coupling.stage,
               pipeline: {
@@ -97,7 +110,7 @@ describe('HeroIn', function () {
             });
             return Promise.resolve();
           }
-        }
+        };
       },
 
       pipelines: function (name) {
@@ -107,10 +120,11 @@ describe('HeroIn', function () {
               list: function () {
                 return Promise.resolve(herokuClient.couplings);
               }
-            }
+            };
           },
           delete: function () {
-            delete herokuClient.pipelinesList[name]
+            delete herokuClient.pipelinesList[name];
+            herokuClient.couplings = [];
             return Promise.resolve();
           },
           create: function (pipelineConfig) {
@@ -121,7 +135,7 @@ describe('HeroIn', function () {
           info: function () {
             return Promise.resolve(herokuClient.pipelinesList[name]);
           }
-        }
+        };
       }
     };
 
