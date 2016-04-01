@@ -44,7 +44,7 @@ var updatedAppConfig = {
 describe('HeroIn', function () {
 
   beforeEach(function (done) {
-    this.timeout(20000);
+    this.timeout(30000);
 
     configurator.delete(appName).then(function () {
         console.log('deleted app');
@@ -57,7 +57,7 @@ describe('HeroIn', function () {
   });
 
   it('should provide full Heroku infrastructure lifecycle', function (done) {
-    this.timeout(30000);
+    this.timeout(40000);
 
     configurator(sampleAppConfig).
       then(function () {

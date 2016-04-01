@@ -24,7 +24,7 @@ var updatedPipelineConfig = {
 
 describe('HeroIn', function () {
   beforeEach(function (done) {
-    this.timeout(20000);
+    this.timeout(30000);
 
     Promise.all(apps.map(configurator.delete)).then(function () {
       console.log('Deleted all test apps');
