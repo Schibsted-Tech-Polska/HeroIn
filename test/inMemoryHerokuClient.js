@@ -81,7 +81,7 @@ var stubHerokuClient = {
             return Promise.resolve(herokuAddonInfo);
           },
           update: function (config) {
-            var otherKeys = otherKeysThan(config, 'plan')
+            var otherKeys = otherKeysThan(config, 'plan');
             if(otherKeys.length > 0) {
               return Promise.reject('Unknown param ' + otherKeys[0]);
             }

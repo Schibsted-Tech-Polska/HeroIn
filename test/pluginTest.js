@@ -13,7 +13,33 @@ describe('Plugin', function () {
     configurator.addPlugin({
       librato: {
         alerts: {
-          configure: function(configVars) {
+          configure: function(config, configVars) {
+            assert.equal(config, 'alerts_config_placeholder');
+            return Promise.resolve();
+          }
+        }
+      }
+    });
+
+    configurator({
+      name: 'sample-app',
+      addons: {
+        librato: {
+          plan: 'librato:development',
+          alerts: 'alerts_config_placeholder'
+        }
+      }
+    }).then(function() {
+      done();
+    }).catch(done);
+  });
+
+  it('should enhance addon config', function(done) {
+    var configurator = heroin(inMemoryHerokuClient());
+    configurator.addPlugin({
+      librato: {
+        alerts: {
+          configure: function(config, configVars) {
             return Promise.resolve();
           },
           export: function() {
