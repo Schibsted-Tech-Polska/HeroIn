@@ -81,6 +81,10 @@ var stubHerokuClient = {
             return Promise.resolve(herokuAddonInfo);
           },
           update: function (config) {
+            var otherKeys = otherKeysThan(config, 'plan')
+            if(otherKeys.length > 0) {
+              return Promise.reject('Unknown param ' + otherKeys[0]);
+            }
             var name = config.plan.split(':')[0];
             if (config.plan === stubHerokuClient._app.addons[name].plan) {
               return Promise.reject('The plan already exists');
@@ -89,6 +93,10 @@ var stubHerokuClient = {
             return Promise.resolve();
           },
           create: function (config) {
+            var otherKeys = otherKeysThan(config, 'plan', 'config', 'attachment');
+              if(otherKeys.length > 0) {
+              return Promise.reject('Unknown param ' + otherKeys[0]);
+            }
             var name = config.plan.split(':')[0];
             stubHerokuClient._app.addons[name] = config;
             return Promise.resolve();
@@ -241,6 +249,10 @@ var stubHerokuClient = {
     };
   }
 };
+
+function otherKeysThan(config, allowedKeys) {
+  return _.without(Object.keys(config), allowedKeys);
+}
 
 module.exports = function () {
   stubHerokuClient.clean();
