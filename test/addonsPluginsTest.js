@@ -8,7 +8,7 @@ var chai = require('chai'),
 
 describe('Addons plugins', function () {
   it('should pass correct addon config to plugin', function (done) {
-    var plugins = [{
+    var plugins = {
       librato: {
         alerts: {
           configure: function (config, configVars) {
@@ -16,8 +16,10 @@ describe('Addons plugins', function () {
           }
         }
       }
-    }];
+    };
+
     var addonsPlugins = addonsPluginsModule(plugins);
+
     addonsPlugins.configure({
         librato: {
           plan: 'librato:development',
