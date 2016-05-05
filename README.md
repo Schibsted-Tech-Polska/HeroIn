@@ -166,7 +166,6 @@ configurator({
     collaborators: ['mateusz.kwasniewski@schibsted.pl']
   }
 );
-};
 ```
 
 
