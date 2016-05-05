@@ -3,7 +3,6 @@ var chai = require('chai'),
   _ = require('lodash'),
   addonsPluginsModule = require('../lib/addonsPlugins');
 
-// wiki: Addon has plugins. Plugins provide extensions via configure/export functions
 describe('Addon plugin', function () {
   it('should support configuration', function (done) {
     var plugins = {

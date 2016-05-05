@@ -132,3 +132,41 @@ var sampleConfiguration = {
 };
 ```
 
+Extending addons with plugins
+------
+Heroku addons are fairly limited in what you can configure. Imagine e.g. you may want to configure monitoring alerts in the monitoring addon.
+It's not possible in the Heroku API. We need to make direct calls to the monitoring provider API. HeroIn provides extension mechanism with plugins.
+You can add a plugin with a matching addon name and inside the value object you specify extension with configure/export functions.
+In the example below we're extending a librato addon with the alerts extension. Configure and export functions should provide promise based interface. 
+```javascript
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: false});
+configurator.addPlugin({
+  librato: {
+    alerts: {
+      configure: function (config, configVars) {
+        // make your API call to librato API here
+        console.log('Configuring plugin with config ', config, 'and additional config vars', configVars);
+        return Promise.resolve();
+      },
+      export: function () {
+        // make your API call here
+        return Promise.resolve({conf: 'alerts_config_placeholder'});
+      }
+    }
+  }
+});
+
+configurator({
+    name: 'simple-widget',
+    region: 'eu',
+    config_vars: {
+      ADDON_CONFIG_VAR: 'test'
+    },
+    addons: {librato: {plan: 'librato:development', alerts: {conf: 'alerts_config_placeholder'}}},
+    collaborators: ['mateusz.kwasniewski@schibsted.pl']
+  }
+);
+};
+```
+
+
