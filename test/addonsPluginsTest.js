@@ -7,8 +7,8 @@ var chai = require('chai'),
 // ignore field in heroku API call, pass env vars to librato addon, use field to make call to librato directly
 // wiki: Addon has plugins. Plugins provide extensions via configure/export functions
 
-describe('Addon plugins', function () {
-  it('should resolve plugin supported extension', function (done) {
+describe('Addon plugin', function () {
+  it('should support configuration', function (done) {
     var plugins = {
       addonName: {
         extension: {
@@ -27,9 +27,28 @@ describe('Addon plugins', function () {
       }
     };
     addonsPlugins.configure(addons).then(function (result) {
-        assert.equal(result, 'alerts_config_placeholder');
-        done();
-      }).catch(done);
+      assert.equal(result, 'alerts_config_placeholder');
+      done();
+    }).catch(done);
+  });
+
+  it('should support export', function (done) {
+    var plugins = {
+      addonName: {
+        extension: {
+          export: function () {
+            return Promise.resolve('some value');
+          }
+        }
+      }
+    };
+
+    var addonsPlugins = addonsPluginsModule(plugins);
+
+    addonsPlugins.export().then(function (result) {
+      assert.deepEqual(result[0], {addonName: {extension: 'some value'}});
+      done();
+    }).catch(done);
   });
 
 });
