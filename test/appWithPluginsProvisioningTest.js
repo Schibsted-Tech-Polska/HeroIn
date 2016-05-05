@@ -47,7 +47,7 @@ describe('Plugin', function () {
             return Promise.resolve();
           },
           export: function() {
-            return Promise.resolve('alerts_config_placeholder');
+            return Promise.resolve({conf: 'alerts_config_placeholder'});
           }
         }
       }
@@ -64,7 +64,7 @@ describe('Plugin', function () {
     }).then(function() {
       return configurator.export('sample-app');
     }).then(function(result) {
-      assert.equal(result.addons.librato.alerts, 'alerts_config_placeholder');
+      assert.deepEqual(result.addons.librato.alerts, {conf: 'alerts_config_placeholder'});
       done();
     }).catch(done);
   });
