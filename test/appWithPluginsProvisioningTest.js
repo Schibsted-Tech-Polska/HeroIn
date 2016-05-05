@@ -5,7 +5,7 @@ var chai = require('chai'),
   inMemoryHerokuClient = require('./inMemoryHerokuClient');
 
 // TODO: failing plugin configure, happy export, failing export
-// ignore field in heroku API call, pass env vars to librato addon, use field to make call to librato directly
+// pass env vars to librato addon, use field to make call to librato directly
 
 describe('Plugin', function () {
   it('should enhance addon behavior', function(done) {

@@ -3,8 +3,7 @@ var chai = require('chai'),
   _ = require('lodash'),
   addonsPluginsModule = require('../lib/addonsPlugins');
 
-// TODO: failing plugin configure, happy export, failing export
-// ignore field in heroku API call, pass env vars to librato addon, use field to make call to librato directly
+// pass env vars to librato addon, use field to make call to librato directly
 // wiki: Addon has plugins. Plugins provide extensions via configure/export functions
 
 describe('Addon plugin', function () {
