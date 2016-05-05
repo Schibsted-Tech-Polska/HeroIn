@@ -3,9 +3,7 @@ var chai = require('chai'),
   _ = require('lodash'),
   addonsPluginsModule = require('../lib/addonsPlugins');
 
-// pass env vars to librato addon, use field to make call to librato directly
 // wiki: Addon has plugins. Plugins provide extensions via configure/export functions
-
 describe('Addon plugin', function () {
   it('should support configuration', function (done) {
     var plugins = {

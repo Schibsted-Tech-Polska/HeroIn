@@ -15,6 +15,7 @@ describe('Plugin', function () {
         alerts: {
           configure: function(config, configVars) {
             assert.equal(config, 'alerts_config_placeholder');
+            assert.equal(configVars.NODE_ENV, 'development');
             return Promise.resolve();
           }
         }
@@ -23,6 +24,9 @@ describe('Plugin', function () {
 
     configurator({
       name: 'sample-app',
+      config_vars: {
+        NODE_ENV: 'development'
+      },
       addons: {
         librato: {
           plan: 'librato:development',
