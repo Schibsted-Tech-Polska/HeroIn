@@ -5,12 +5,13 @@ var chai = require('chai'),
 
 // TODO: failing plugin configure, happy export, failing export
 // ignore field in heroku API call, pass env vars to librato addon, use field to make call to librato directly
+// wiki: Addon has plugins. Plugins provide extensions via configure/export functions
 
-describe('Addons plugins', function () {
-  it('should pass correct addon config to plugin', function (done) {
+describe('Addon plugins', function () {
+  it('should resolve plugin supported extension', function (done) {
     var plugins = {
       addonName: {
-        alerts: {
+        extension: {
           configure: function (config, configVars) {
             return Promise.resolve(config);
           }
@@ -19,14 +20,13 @@ describe('Addons plugins', function () {
     };
 
     var addonsPlugins = addonsPluginsModule(plugins);
-
-    addonsPlugins.configure({
-        addonName: {
-          plan: 'librato:development',
-          alerts: 'alerts_config_placeholder'
-        }
+    var addons = {
+      addonName: {
+        plan: 'librato:development',
+        extension: 'alerts_config_placeholder'
       }
-    ).then(function (result) {
+    };
+    addonsPlugins.configure(addons).then(function (result) {
         assert.equal(result, 'alerts_config_placeholder');
         done();
       }).catch(done);
