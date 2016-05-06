@@ -8,7 +8,7 @@ var chai = require('chai'),
 // pass env vars to librato addon, use field to make call to librato directly
 
 describe('Plugin', function () {
-  it('should enhance addon behavior', function(done) {
+  it('should enhance addon behavior when provisioning', function(done) {
     var configurator = heroin(inMemoryHerokuClient());
     configurator.addPlugin({
       librato: {
@@ -38,7 +38,7 @@ describe('Plugin', function () {
     }).catch(done);
   });
 
-  it('should enhance addon config', function(done) {
+  it('should enhance addon behavior when exporting', function(done) {
     var configurator = heroin(inMemoryHerokuClient());
     configurator.addPlugin({
       librato: {
@@ -46,7 +46,8 @@ describe('Plugin', function () {
           configure: function(config, configVars) {
             return Promise.resolve();
           },
-          export: function() {
+          export: function(configVars) {
+            assert.equal(configVars.NODE_ENV, 'development');
             return Promise.resolve({conf: 'alerts_config_placeholder'});
           }
         }
@@ -55,6 +56,9 @@ describe('Plugin', function () {
 
     configurator({
       name: 'sample-app',
+      config_vars: {
+        NODE_ENV: 'development'
+      },
       addons: {
         librato: {
           plan: 'librato:development',
