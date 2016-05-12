@@ -4,9 +4,6 @@ var chai = require('chai'),
   _ = require('lodash'),
   inMemoryHerokuClient = require('./inMemoryHerokuClient');
 
-// TODO: failing plugin configure, happy export, failing export
-// pass env vars to librato addon, use field to make call to librato directly
-
 describe('Plugin', function () {
   it('should enhance addon behavior when provisioning', function(done) {
     var configurator = heroin(inMemoryHerokuClient());
@@ -15,6 +12,13 @@ describe('Plugin', function () {
         alerts: {
           configure: function(config, configVars) {
             assert.equal(config, 'alerts_config_placeholder');
+            assert.equal(configVars.NODE_ENV, 'development');
+            return Promise.resolve();
+          }
+        },
+        otherConfig: {
+          configure: function(config, configVars) {
+            assert.equal(config, 'other_config_placeholder');
             assert.equal(configVars.NODE_ENV, 'development');
             return Promise.resolve();
           }
@@ -30,7 +34,8 @@ describe('Plugin', function () {
       addons: {
         librato: {
           plan: 'librato:development',
-          alerts: 'alerts_config_placeholder'
+          alerts: 'alerts_config_placeholder',
+          otherConfig: 'other_config_placeholder'
         }
       }
     }).then(function() {
@@ -50,6 +55,15 @@ describe('Plugin', function () {
             assert.equal(configVars.NODE_ENV, 'development');
             return Promise.resolve({conf: 'alerts_config_placeholder'});
           }
+        },
+        otherConfig: {
+          configure: function(config, configVars) {
+            return Promise.resolve();
+          },
+          export: function(configVars) {
+            assert.equal(configVars.NODE_ENV, 'development');
+            return Promise.resolve({conf: 'other_config_placeholder'});
+          }
         }
       }
     });
@@ -62,13 +76,15 @@ describe('Plugin', function () {
       addons: {
         librato: {
           plan: 'librato:development',
-          alerts: 'alerts_config_placeholder'
+          alerts: 'alerts_config_placeholder',
+          otherConfig: 'other_config_placeholder'
         }
       }
     }).then(function() {
       return configurator.export('sample-app');
     }).then(function(result) {
-      assert.deepEqual(result.addons.librato.alerts, {conf: 'alerts_config_placeholder'});
+      //assert.deepEqual(result.addons.librato.alerts, {conf: 'alerts_config_placeholder'});
+      assert.deepEqual(result.addons.librato.otherConfig, {conf: 'other_config_placeholder'});
       done();
     }).catch(done);
   });
