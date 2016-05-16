@@ -2,6 +2,7 @@ var chai = require('chai'),
   assert = chai.assert;
 var _ = require('lodash');
 var configVars = require('../lib/configVars');
+var log = require('./noop');
 
 describe('config vars deletion', function () {
   it('should ignore config vars from addons', function (done) {
@@ -35,8 +36,8 @@ describe('config vars deletion', function () {
       }
     };
 
-    configVars(app).configure({"FOO": "test"}).then(function() {
-      return configVars(app).export();
+    configVars(app, log).configure({"FOO": "test"}).then(function() {
+      return configVars(app, log).export();
     }).then(function(configSentToHeroku) {
       assert.equal(configSentToHeroku.FOO, "test");
       assert.deepEqual(configSentToHeroku.BAR, null);

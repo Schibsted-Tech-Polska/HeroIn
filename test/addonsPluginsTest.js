@@ -1,7 +1,8 @@
 var chai = require('chai'),
   assert = chai.assert,
   _ = require('lodash'),
-  addonsPluginsModule = require('../lib/addonsPlugins');
+  addonsPluginsModule = require('../lib/addonsPlugins'),
+  log = require('./noop');
 
 describe('Addon plugin', function () {
   it('should support configuration', function (done) {
@@ -15,7 +16,7 @@ describe('Addon plugin', function () {
       }
     };
 
-    var addonsPlugins = addonsPluginsModule(plugins);
+    var addonsPlugins = addonsPluginsModule(plugins, log);
     var addons = {
       addonName: {
         plan: 'librato:development',
@@ -39,7 +40,7 @@ describe('Addon plugin', function () {
       }
     };
 
-    var addonsPlugins = addonsPluginsModule(plugins);
+    var addonsPlugins = addonsPluginsModule(plugins, log);
 
     addonsPlugins.export().then(function (result) {
       assert.deepEqual(result[0], {addonName: {extension: 'some value'}});
@@ -58,7 +59,7 @@ describe('Addon plugin', function () {
       }
     };
 
-    var addonsPlugins = addonsPluginsModule(plugins);
+    var addonsPlugins = addonsPluginsModule(plugins, log);
     var addons = {
       addonName: {
         plan: 'librato:development',
@@ -82,7 +83,7 @@ describe('Addon plugin', function () {
       }
     };
 
-    var addonsPlugins = addonsPluginsModule(plugins);
+    var addonsPlugins = addonsPluginsModule(plugins, log);
 
     addonsPlugins.export().catch(function (error) {
       assert.deepEqual(error, 'error');
@@ -101,7 +102,7 @@ describe('Addon plugin', function () {
       }
     };
 
-    var addonsPlugins = addonsPluginsModule(plugins);
+    var addonsPlugins = addonsPluginsModule(plugins, log);
     var addons = {};
     addonsPlugins.configure(addons).then(function (result) {
       assert.deepEqual(result, ['noop']);
