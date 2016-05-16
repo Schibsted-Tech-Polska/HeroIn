@@ -144,7 +144,7 @@ configurator.addPlugin({
   librato: {
     alerts: {
       configure: function (config, configVars) {
-        // make your API call to librato API here
+        // make your API call here
         console.log('Configuring plugin with config ', config, 'and additional config vars', configVars);
         return Promise.resolve();
       },
