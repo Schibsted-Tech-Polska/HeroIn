@@ -4,7 +4,7 @@ var _ = require('lodash');
 var formation = require('../lib/formation');
 var log = require('./noop');
 
-describe('formation update', function () {
+describe('Formation update', function () {
   it('should be applied when formation already exists', function (done) {
     var app = {
       formation: function () {

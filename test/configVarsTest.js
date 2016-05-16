@@ -4,7 +4,7 @@ var _ = require('lodash');
 var configVars = require('../lib/configVars');
 var log = require('./noop');
 
-describe('config vars deletion', function () {
+describe('Config vars deletion', function () {
   it('should ignore config vars from addons', function (done) {
     var app = {
       _configVars: {

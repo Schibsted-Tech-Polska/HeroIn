@@ -3,7 +3,7 @@ var chai = require('chai'),
   heroin = require('../lib/heroin'),
   _ = require('lodash');
 
-describe('HeroIn', function () {
+describe('HeroIn pipelines', function () {
 
   it('should prompt you for a pipeline config or name', function () {
     try {

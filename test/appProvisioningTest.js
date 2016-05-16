@@ -46,7 +46,6 @@ describe('HeroIn', function () {
     }).then(function (msg) {
       assert.notOk(msg, 'app should not exist');
     }, function (err) {
-      console.error('Error', JSON.stringify(err));
       assert.equal(err.statusCode, 404);
       done();
     }).catch(done);

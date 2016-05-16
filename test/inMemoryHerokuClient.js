@@ -1,6 +1,5 @@
 var _ = require('lodash');
 
-
 var stubHerokuClient = {
   _app: {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}, log_drains: [], domains: []},
   clean: function () {
@@ -28,7 +27,7 @@ var stubHerokuClient = {
             "maintenance": stubHerokuClient._app.maintenance,
             "stack": {
               "name": stubHerokuClient._app.stack
-            },
+            }
           });
         } else {
           return Promise.reject({
