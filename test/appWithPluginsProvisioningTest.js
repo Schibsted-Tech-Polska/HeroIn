@@ -5,19 +5,19 @@ var chai = require('chai'),
   inMemoryHerokuClient = require('./inMemoryHerokuClient');
 
 describe('Plugin', function () {
-  it('should enhance addon behavior when provisioning', function(done) {
+  it('should enhance addon behavior when provisioning', function (done) {
     var configurator = heroin(inMemoryHerokuClient());
     configurator.addPlugin({
       librato: {
         alerts: {
-          configure: function(config, configVars) {
+          configure: function (config, configVars) {
             assert.equal(config, 'alerts_config_placeholder');
             assert.equal(configVars.NODE_ENV, 'development');
             return Promise.resolve();
           }
         },
         otherConfig: {
-          configure: function(config, configVars) {
+          configure: function (config, configVars) {
             assert.equal(config, 'other_config_placeholder');
             assert.equal(configVars.NODE_ENV, 'development');
             return Promise.resolve();
@@ -27,7 +27,7 @@ describe('Plugin', function () {
     }).addPlugin({
       librato: {
         anotherPluginConfig: {
-          configure: function(config, configVars) {
+          configure: function (config, configVars) {
             assert.equal(config, 'another_plugin_config_placeholder');
             assert.equal(configVars.NODE_ENV, 'development');
             return Promise.resolve();
@@ -49,29 +49,29 @@ describe('Plugin', function () {
           anotherPluginConfig: 'another_plugin_config_placeholder'
         }
       }
-    }).then(function() {
+    }).then(function () {
       done();
     }).catch(done);
   });
 
-  it('should enhance addon behavior when exporting', function(done) {
+  it('should enhance addon behavior when exporting', function (done) {
     var configurator = heroin(inMemoryHerokuClient());
     configurator.addPlugin({
       librato: {
         alerts: {
-          configure: function(config, configVars) {
+          configure: function (config, configVars) {
             return Promise.resolve();
           },
-          export: function(configVars) {
+          export: function (configVars) {
             assert.equal(configVars.NODE_ENV, 'development');
             return Promise.resolve({conf: 'alerts_config_placeholder'});
           }
         },
         otherConfig: {
-          configure: function(config, configVars) {
+          configure: function (config, configVars) {
             return Promise.resolve();
           },
-          export: function(configVars) {
+          export: function (configVars) {
             assert.equal(configVars.NODE_ENV, 'development');
             return Promise.resolve({conf: 'other_config_placeholder'});
           }
@@ -80,10 +80,10 @@ describe('Plugin', function () {
     }).addPlugin({
       librato: {
         anotherPluginConfig: {
-          configure: function(config, configVars) {
+          configure: function (config, configVars) {
             return Promise.resolve();
           },
-          export: function(configVars) {
+          export: function (configVars) {
             assert.equal(configVars.NODE_ENV, 'development');
             return Promise.resolve({conf: 'another_plugin_config_placeholder'});
           }
@@ -104,12 +104,46 @@ describe('Plugin', function () {
           anotherPluginConfig: 'some_other_config_paceholder'
         }
       }
-    }).then(function() {
+    }).then(function () {
       return configurator.export('sample-app');
-    }).then(function(result) {
+    }).then(function (result) {
       assert.deepEqual(result.addons.librato.alerts, {conf: 'alerts_config_placeholder'});
       assert.deepEqual(result.addons.librato.otherConfig, {conf: 'other_config_placeholder'});
       assert.deepEqual(result.addons.librato.anotherPluginConfig, {conf: 'another_plugin_config_placeholder'});
+      done();
+    }).catch(done);
+  });
+
+  it('listed last wins when conflicting names', function (done) {
+    var configurator = heroin(inMemoryHerokuClient());
+    configurator.addPlugin({
+      librato: {
+        alerts: {
+          configure: function (config, configVars) {
+            throw new Error("should not be called");
+          }
+        }
+      }
+    }).addPlugin({
+      librato: {
+        alerts: {
+          configure: function (config, configVars) {
+            assert.equal(config, 'alerts_config_placeholder');
+            return Promise.resolve();
+          }
+        }
+      }
+    });
+
+    configurator({
+      name: 'sample-app',
+      addons: {
+        librato: {
+          plan: 'librato:development',
+          alerts: 'alerts_config_placeholder'
+        }
+      }
+    }).then(function () {
       done();
     }).catch(done);
   });
