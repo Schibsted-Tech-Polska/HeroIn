@@ -23,7 +23,7 @@ describe('Addon plugin', function () {
       }
     };
     addonsPlugins.configure(addons).then(function (result) {
-      assert.equal(result, 'alerts_config_placeholder');
+      assert.deepEqual(result, ['alerts_config_placeholder']);
       done();
     }).catch(done);
   });
@@ -66,7 +66,7 @@ describe('Addon plugin', function () {
       }
     };
     addonsPlugins.configure(addons).catch(function (error) {
-      assert.equal(error, 'error');
+      assert.deepEqual(error, 'error');
       done();
     }).catch(done);
   });
@@ -85,7 +85,26 @@ describe('Addon plugin', function () {
     var addonsPlugins = addonsPluginsModule(plugins);
 
     addonsPlugins.export().catch(function (error) {
-      assert.equal(error, 'error');
+      assert.deepEqual(error, 'error');
+      done();
+    }).catch(done);
+  });
+
+  it('should be ignored when no addon', function (done) {
+    var plugins = {
+      addonName: {
+        extension: {
+          configure: function (config, configVars) {
+            return Promise.resolve(config);
+          }
+        }
+      }
+    };
+
+    var addonsPlugins = addonsPluginsModule(plugins);
+    var addons = {};
+    addonsPlugins.configure(addons).then(function (result) {
+      assert.deepEqual(result, ['noop']);
       done();
     }).catch(done);
   });
