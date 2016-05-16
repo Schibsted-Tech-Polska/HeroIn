@@ -24,6 +24,16 @@ describe('Plugin', function () {
           }
         }
       }
+    }).addPlugin({
+      librato: {
+        anotherPluginConfig: {
+          configure: function(config, configVars) {
+            assert.equal(config, 'another_plugin_config_placeholder');
+            assert.equal(configVars.NODE_ENV, 'development');
+            return Promise.resolve();
+          }
+        }
+      }
     });
 
     configurator({
@@ -35,7 +45,8 @@ describe('Plugin', function () {
         librato: {
           plan: 'librato:development',
           alerts: 'alerts_config_placeholder',
-          otherConfig: 'other_config_placeholder'
+          otherConfig: 'other_config_placeholder',
+          anotherPluginConfig: 'another_plugin_config_placeholder'
         }
       }
     }).then(function() {
@@ -66,6 +77,18 @@ describe('Plugin', function () {
           }
         }
       }
+    }).addPlugin({
+      librato: {
+        anotherPluginConfig: {
+          configure: function(config, configVars) {
+            return Promise.resolve();
+          },
+          export: function(configVars) {
+            assert.equal(configVars.NODE_ENV, 'development');
+            return Promise.resolve({conf: 'another_plugin_config_placeholder'});
+          }
+        }
+      }
     });
 
     configurator({
@@ -77,14 +100,16 @@ describe('Plugin', function () {
         librato: {
           plan: 'librato:development',
           alerts: 'alerts_config_placeholder',
-          otherConfig: 'other_config_placeholder'
+          otherConfig: 'other_config_placeholder',
+          anotherPluginConfig: 'some_other_config_paceholder'
         }
       }
     }).then(function() {
       return configurator.export('sample-app');
     }).then(function(result) {
-      //assert.deepEqual(result.addons.librato.alerts, {conf: 'alerts_config_placeholder'});
+      assert.deepEqual(result.addons.librato.alerts, {conf: 'alerts_config_placeholder'});
       assert.deepEqual(result.addons.librato.otherConfig, {conf: 'other_config_placeholder'});
+      assert.deepEqual(result.addons.librato.anotherPluginConfig, {conf: 'another_plugin_config_placeholder'});
       done();
     }).catch(done);
   });
