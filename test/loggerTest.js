@@ -1,6 +1,5 @@
 var chai = require('chai'),
-  assert = chai.assert,
-  _ = require('lodash');
+  assert = chai.assert;
 
 var stubConsole = function() {
   return {

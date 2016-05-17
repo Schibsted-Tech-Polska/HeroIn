@@ -9,7 +9,7 @@ var appName = 'sample-heroku-app';
 describe('HeroIn', function () {
 
   beforeEach(function (done) {
-    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'NONE'});
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
     configurator.delete(appName).then(function () {
         done();
       }, function (err) {
@@ -30,7 +30,7 @@ describe('HeroIn', function () {
 
   it('should prompt you for an app name', function () {
     try {
-      var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'NONE'});
+      var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
       configurator({});
     } catch (e) {
       assert.equal(e.message, 'Please specify app name');
@@ -38,7 +38,7 @@ describe('HeroIn', function () {
   });
 
   it('should delete app by name', function (done) {
-    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'NONE'});
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
     configurator({name: appName}).then(function () {
       return configurator.delete(appName);
     }).then(function () {
@@ -52,7 +52,7 @@ describe('HeroIn', function () {
   });
 
   it('should create heroku app', function (done) {
-    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'NONE'});
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
     var appConfiguration = {
       name: appName,
       region: 'eu',
@@ -119,7 +119,7 @@ describe('HeroIn', function () {
   });
 
   it('should update basic app info', function (done) {
-    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'NONE'});
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
     var appConfiguration = {
       name: appName,
       region: 'eu'
@@ -285,7 +285,7 @@ describe('HeroIn', function () {
 });
 
 function updateTest(originalConfiguration, updatedConfiguration, success, error) {
-  var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'NONE'});
+  var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
   configurator(originalConfiguration).then(function () {
     return configurator(updatedConfiguration);
   }).then(function () {
