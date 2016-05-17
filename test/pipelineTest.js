@@ -44,7 +44,7 @@ describe('HeroIn pipelines', function () {
   });
 
   it('should allow to create/update pipelines', function (done) {
-    var configurator = heroin(inMemoryHerokuClient());
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'NONE'});
     var pipelineConfig = {
       name: 'sample_pipeline',
       apps: {staging: 'sample_app1', production: 'sample_app2'}

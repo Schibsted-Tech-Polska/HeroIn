@@ -6,7 +6,7 @@ var chai = require('chai'),
 
 describe('Plugin', function () {
   it('should enhance addon behavior when provisioning', function (done) {
-    var configurator = heroin(inMemoryHerokuClient());
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'NONE'});
     configurator.addPlugin({
       librato: {
         alerts: {
@@ -55,7 +55,7 @@ describe('Plugin', function () {
   });
 
   it('should enhance addon behavior when exporting', function (done) {
-    var configurator = heroin(inMemoryHerokuClient());
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'NONE'});
     configurator.addPlugin({
       librato: {
         alerts: {
@@ -115,7 +115,7 @@ describe('Plugin', function () {
   });
 
   it('listed last wins when conflicting names', function (done) {
-    var configurator = heroin(inMemoryHerokuClient());
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'NONE'});
     configurator.addPlugin({
       librato: {
         alerts: {
@@ -143,7 +143,7 @@ describe('Plugin', function () {
           alerts: 'alerts_config_placeholder'
         }
       }
-    }).then(function () {
+    }, {logLevel: 'NONE'}).then(function () {
       done();
     }).catch(done);
   });
