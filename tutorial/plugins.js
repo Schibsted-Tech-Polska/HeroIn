@@ -2,7 +2,7 @@
 var heroin = require('../lib/heroin');
 var util = require('util');
 
-var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: false});
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'INFO'});
 configurator.addPlugin({
   logentries: {
     alerts: {

@@ -1,7 +1,7 @@
 //var heroin = require('heroin-js');
 var heroin = require('../lib/heroin');
 
-var configurator = heroin(process.env.HEROKU_API_TOKEN);
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: INFO});
 
 configurator.export('simple-widget').then(function(result) {
 	console.log(result);

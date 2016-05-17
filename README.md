@@ -45,7 +45,7 @@ node heroku.js
 ```javascript
 var heroin = require('heroin-js');
 
-var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: false});
+var configurator = heroin(process.env.HEROKU_API_TOKEN);
 
 configurator.export('my-test-widget').then(function(result) {
 	console.log(result);
@@ -58,7 +58,7 @@ configurator.export('my-test-widget').then(function(result) {
 ```javascript
 var heroin = require('heroin-js');
 
-var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: false});
+var configurator = heroin(process.env.HEROKU_API_TOKEN);
 
 configurator.pipeline({
   name: 'my-test-pipeline',
@@ -139,7 +139,7 @@ It's not possible in the Heroku API. We need to make direct calls to the monitor
 You can add a plugin with a matching addon name and inside the value object you specify extension with configure/export functions.
 In the example below we're extending a librato addon with the alerts extension. Configure and export functions should provide promise based interface. 
 ```javascript
-var configurator = heroin(process.env.HEROKU_API_TOKEN, {debug: false});
+var configurator = heroin(process.env.HEROKU_API_TOKEN);
 configurator.addPlugin({
   librato: {
     alerts: {
@@ -168,4 +168,15 @@ configurator({
 );
 ```
 
+Logging Levels
+------
 
+```javascript
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'INFO'});
+```
+
+Actual values:
+- NONE - don't print anything to the console
+- ERROR - print only error messages
+- INFO (default) - print only high level configuration steps
+- DEBUG - print everything from ERROR and INFO plus all HTTP calls to Heroku API
