@@ -1,6 +1,6 @@
 {
   "name": "heroin-js",
-  "version": "1.12.1",
+  "version": "1.12.2",
   "description": "Heroku Infrastructure As A Code",
   "main": "lib/heroin.js",
   "scripts": {
