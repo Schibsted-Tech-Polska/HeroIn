@@ -1,7 +1,7 @@
 Heroku Infrastructure As A Code (HeroIn)
 -------
 
-[![Build Status](https://travis.schibsted.io/snt/HeroIn.svg?token=rZVkndZyUmroq3r7Jeyx&branch=master)](https://travis.schibsted.io/snt/HeroIn)
+[![Build Status](https://travis-ci.org/Schibsted-Tech-Polska/HeroIn.svg?branch=master)](https://travis-ci.org/Schibsted-Tech-Polska/HeroIn)
 
 What:
 ------
