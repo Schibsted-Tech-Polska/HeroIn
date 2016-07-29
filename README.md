@@ -9,7 +9,7 @@ What:
 - refactor your infrastructure
 - test your infrastructure 
 - track changes to your infrastructure in deployment pipelines
-- document your infrastructure as a code
+- document your infrastructure as code
 
 Why:
 ------
