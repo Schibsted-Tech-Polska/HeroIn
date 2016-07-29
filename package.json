@@ -3,6 +3,7 @@
   "version": "1.12.2",
   "description": "Heroku Infrastructure As A Code",
   "main": "lib/heroin.js",
+  "repository": "git@github.com:Schibsted-Tech-Polska/HeroIn.git",
   "scripts": {
     "test": "mocha --recursive",
     "test:integration": "mocha test_integration",
