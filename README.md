@@ -74,7 +74,7 @@ Principles:
 ------
 - don't reinvent config names, use original names from Heroku API
 - compact format so that you can describe everything in one text file
-- all changes should go through those files and your manual changes will be overridden 
+- all changes should go through those files and your manual changes will be overwritten 
 - possible to avoid copy paste in configs 
 - use JS for configuration (you can access process.env.VAR and merge configs using language constructs and libs, not custom DSLs)
 
