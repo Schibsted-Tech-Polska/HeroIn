@@ -38,7 +38,7 @@ var updatedAppConfig = {
   },
   addons: {
     librato: {plan: 'librato:development', name: 'updated-app-librato'},
-    logentries: {plan: 'logentries:le_tryit', name: 'sample-logentries'},
+    logentries: {plan: 'logentries:le_tryit', name: 'updated-logentries'},
     'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: 'heroin-sample-redis'}
   },
   collaborators: ['mateusz.kwasniewski@schibsted.pl'],
