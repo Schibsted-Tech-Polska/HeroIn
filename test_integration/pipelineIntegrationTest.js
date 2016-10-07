@@ -4,12 +4,12 @@ var chai = require('chai'),
   _ = require('lodash');
 
 var configurator = heroin(process.env.HEROKU_API_TOKEN);
-var pipelineName = 'sample-heroin-pipeline';
-var reviewApp = 'sample-heroin-review-app';
-var newReviewApp = 'new-sample-heroin-review-app';
-var developmentApp = 'sample-heroin-development-app';
-var stagingApp = 'sample-heroin-staging-app';
-var productionApp = 'sample-heroin-production-app';
+var pipelineName = 'heroin-pipeline';
+var reviewApp = 'heroin-reviewing-app';
+var newReviewApp = 'heroin-review-app';
+var developmentApp = 'heroin-development-app';
+var stagingApp = 'heroin-staging-app';
+var productionApp = 'heroin-production-app';
 var apps = [reviewApp, newReviewApp, developmentApp, stagingApp, productionApp];
 
 var pipelineConfig = {
@@ -23,7 +23,17 @@ var updatedPipelineConfig = {
 };
 
 describe('HeroIn', function () {
-  beforeEach(function (done) {
+  before(function (done) {
+    this.timeout(30000);
+
+    Promise.all(apps.map(configurator.delete)).then(function () {
+      console.log('Deleted all test apps');
+    }, function (err) {
+      console.error('Could not delete apps', err);
+    }).then(done);
+  });
+
+  after(function (done) {
     this.timeout(30000);
 
     Promise.all(apps.map(configurator.delete)).then(function () {
@@ -38,34 +48,34 @@ describe('HeroIn', function () {
 
     Promise.all(
       apps.
-        map(function (name) {
-          return {name: name};
-        }).
-        map(configurator)
+      map(function (name) {
+        return {name: name};
+      }).
+      map(configurator)
     ).
-      then(function () {
-        return configurator.pipeline(pipelineConfig); // create new pipeline
-      }).
-      then(function () {
-        return configurator.pipeline(pipelineConfig); // no op update
-      }).
-      then(function () {
-        return configurator.pipeline(pipelineName);
-      }).
-      then(function (actualPipelineConfig) {
-        assert.deepEqual(actualPipelineConfig, pipelineConfig);
-      }).
-      then(function() {
-        return configurator.pipeline(updatedPipelineConfig);
-      }).
-      then(function() {
-        return configurator.pipeline(pipelineName);
-      }).
-      then(function (actualPipelineConfig) {
-        assert.deepEqual(actualPipelineConfig, updatedPipelineConfig);
-      }).
-      then(done).
-      catch(done);
+    then(function () {
+      return configurator.pipeline(pipelineConfig); // create new pipeline
+    }).
+    then(function () {
+      return configurator.pipeline(pipelineConfig); // no op update
+    }).
+    then(function () {
+      return configurator.pipeline(pipelineName);
+    }).
+    then(function (actualPipelineConfig) {
+      assert.deepEqual(actualPipelineConfig, pipelineConfig);
+    }).
+    then(function() {
+      return configurator.pipeline(updatedPipelineConfig);
+    }).
+    then(function() {
+      return configurator.pipeline(pipelineName);
+    }).
+    then(function (actualPipelineConfig) {
+      assert.deepEqual(actualPipelineConfig, updatedPipelineConfig);
+    }).
+    then(done).
+    catch(done);
   });
 });
 
