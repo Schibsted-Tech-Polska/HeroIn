@@ -20,7 +20,8 @@ var sampleAppConfig = {
   features: {
     'log-runtime-metrics': {enabled: true},
   },
-  formation: [{process: 'web', quantity: 1, size: 'Free'}]
+  formation: [{process: 'web', quantity: 1, size: 'Free'}],
+  buildpacks: ['https://github.com/heroku/heroku-buildpack-nodejs#yarn']
 };
 
 var updatedAppConfig = {
@@ -37,7 +38,8 @@ var updatedAppConfig = {
   features: {
     'log-runtime-metrics': {enabled: false},
   },
-  formation: [{process: 'web', quantity: 1, size: 'Free'}]
+  formation: [{process: 'web', quantity: 1, size: 'Free'}],
+  buildpacks: ['https://github.com/heroku/heroku-buildpack-nodejs#yarn']
 };
 
 
