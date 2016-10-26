@@ -251,10 +251,10 @@ var stubHerokuClient = {
           },
           update: function(config) {
             stubHerokuClient._app.buildpacks = config.updates
-              .map(function(buildpack) { return buildpack.buildpack });
+              .map(function(buildpack) { return buildpack.buildpack; });
             return Promise.resolve();
           }
-        }
+        };
       }
     };
   },
