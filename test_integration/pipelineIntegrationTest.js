@@ -4,6 +4,7 @@ var chai = require('chai'),
   _ = require('lodash');
 
 var configurator = heroin(process.env.HEROKU_API_TOKEN);
+
 var pipelineName = 'heroin-pipeline';
 var reviewApp = 'heroin-reviewing-app';
 var newReviewApp = 'heroin-review-app';

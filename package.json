@@ -10,6 +10,7 @@
     "test:coverage": "istanbul cover node_modules/mocha/bin/_mocha --dir ./coverage --report lcov -- -R spec --recursive --timeout 7000 ./test",
     "lint": "jshint --exclude=node_modules **/*.js"
   },
+  "engines" : { "node" : ">=6.0.0" },
   "keywords": [
     "heroku",
     "infrastructure",
