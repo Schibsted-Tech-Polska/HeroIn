@@ -281,6 +281,24 @@ describe('HeroIn', function () {
     }, done);
   });
 
+  it('should update buildpacks', function (done) {
+    var appConfiguration = {
+      name: appName,
+      buildpacks: ['www.example.com', 'www.another_example.com']
+    };
+
+    var updatedConfiguration = {
+      name: appName,
+      buildpacks: ['www.example.com']
+    };
+
+    updateTest(appConfiguration, updatedConfiguration, function (result) {
+      assert.include(result.buildpacks, 'www.example.com');
+      assert.notInclude(result.buildpacks, 'www.another_example.com');
+      done();
+    }, done);
+  });
+
 
 });
 
