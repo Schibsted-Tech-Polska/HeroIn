@@ -1,7 +1,7 @@
 var _ = require('lodash');
 
 var stubHerokuClient = {
-  _app: {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}, log_drains: [], domains: []},
+  _app: {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}, log_drains: [], domains: [], buildpacks: []},
   clean: function () {
     stubHerokuClient._app = {
       name: '',
@@ -10,7 +10,8 @@ var stubHerokuClient = {
       features: {},
       addons: {},
       log_drains: [],
-      domains: []
+      domains: [],
+      buildpacks: []
     };
   },
   apps: function (app_name) {
@@ -230,6 +231,27 @@ var stubHerokuClient = {
               return Promise.reject('Log drain does not exist');
             }
             stubHerokuClient._app.log_drains = _.without(stubHerokuClient._app.log_drains, url);
+            return Promise.resolve();
+          }
+        };
+      },
+      buildpackInstallations: function() {
+        return {
+          list: function () {
+            var array = stubHerokuClient._app.buildpacks.map(function (url, idx) {
+              return {
+                ordinal: idx,
+                buildpack: {
+                  url: url,
+                  name: url
+                }
+              };
+            });
+            return Promise.resolve(array);
+          },
+          update: function(config) {
+            stubHerokuClient._app.buildpacks = config.updates
+              .map(function(buildpack) { return buildpack.buildpack; });
             return Promise.resolve();
           }
         };
