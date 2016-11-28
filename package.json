@@ -1,6 +1,6 @@
 {
   "name": "heroin-js",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Heroku Infrastructure As A Code",
   "main": "lib/heroin.js",
   "repository": "git@github.com:Schibsted-Tech-Polska/HeroIn.git",
@@ -10,7 +10,9 @@
     "test:coverage": "istanbul cover node_modules/mocha/bin/_mocha --dir ./coverage --report lcov -- -R spec --recursive --timeout 7000 ./test",
     "lint": "jshint --exclude=node_modules **/*.js"
   },
-  "engines" : { "node" : ">=6.0.0" },
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "keywords": [
     "heroku",
     "infrastructure",
