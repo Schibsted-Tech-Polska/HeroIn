@@ -5,10 +5,10 @@ var chai = require('chai'),
 
 var configurator = heroin(process.env.HEROKU_API_TOKEN);
 
-var baseAppName = 'base-heroin-application';
-var testAppName = 'test-heroin-application';
-var addonAppName = 'addon-app-test';
-var rebuildAddonAppName = 'recreate-addon-app-test';
+var baseAppName = 'base-heroin-app';
+var testAppName = 'test-heroin-app';
+var addonAppName = 'addon-heroin-app';
+var rebuildAddonAppName = 'recreate-addon-heroin-app';
 
 var baseConfig = {
   region: 'eu',
@@ -36,7 +36,7 @@ var testAppConfig = Object.assign({}, baseConfig, {
 
 var addonAppConfig = {
   name: addonAppName,
-  addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev'}}
+  addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: 'addon-redis'}}
 };
 
 var rebuildAddonAppConfig = Object.assign({}, baseConfig, {
@@ -165,7 +165,7 @@ describe('HeroIn', function () {
     catch(done);
   });
 
-  it.only('should not attach second addon of a same kind if the name is deleted but recreate it with default name', function(done) {
+  it('should not attach second addon of a same kind if the name is deleted but recreate it with default name', function(done) {
     this.timeout(10000);
 
     var updatedAddonAppConfig = Object.assign({}, addonAppConfig, {
@@ -181,7 +181,7 @@ describe('HeroIn', function () {
     }).
     then(function(actualAppConfig) {
       assert.equal(actualAppConfig.addons['heroku-redis'].plan, 'heroku-redis:hobby-dev');
-      assert.equal(actualAppConfig.addons['heroku-redis'].name.split('-')[0], 'redis');
+      assert.equal(actualAppConfig.addons['heroku-redis'].name, 'addon-redis');
     }).
     then(done).
     catch(done);
