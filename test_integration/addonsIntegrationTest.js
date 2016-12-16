@@ -7,40 +7,42 @@ var configurator = heroin(process.env.HEROKU_API_TOKEN);
 
 var baseAppName = 'base-heroin-application';
 var testAppName = 'test-heroin-application';
+var addonAppName = 'addon-app-test';
+var rebuildAddonAppName = 'recreate-addon-app-test';
+
+var baseConfig = {
+  region: 'eu',
+  maintenance: false,
+  stack: 'cedar-14',
+  config_vars: {
+    NODE_ENV: 'production'
+  },
+  collaborators: ['patryk.mrukot@schibsted.pl'],
+  features: {
+    'log-runtime-metrics': {enabled: true}
+  },
+  formation: [{process: 'web', quantity: 1, size: 'Free'}]
+};
 
 var baseAppConfig = {
   name: baseAppName,
-  region: 'eu',
-  maintenance: false,
-  stack: 'cedar-14',
-  config_vars: {
-    NODE_ENV: 'production'
-  },
-  addons: {
-    'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: 'base-heroin-redis'}
-  },
-  collaborators: ['patryk.mrukot@schibsted.pl'],
-  features: {
-    'log-runtime-metrics': {enabled: true}
-  },
-  formation: [{process: 'web', quantity: 1, size: 'Free'}]
+  addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: 'base-heroin-redis'}}
 };
 
-var testAppConfig = {
+var testAppConfig = Object.assign({}, baseConfig, {
   name: testAppName,
-  region: 'eu',
-  maintenance: false,
-  stack: 'cedar-14',
-  config_vars: {
-    NODE_ENV: 'production'
-  },
-  addons: {},
-  collaborators: ['patryk.mrukot@schibsted.pl'],
-  features: {
-    'log-runtime-metrics': {enabled: true}
-  },
-  formation: [{process: 'web', quantity: 1, size: 'Free'}]
+  addons: {}
+});
+
+var addonAppConfig = {
+  name: addonAppName,
+  addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev'}}
 };
+
+var rebuildAddonAppConfig = Object.assign({}, baseConfig, {
+  name: rebuildAddonAppName,
+  addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev'}}
+});
 
 var deleteApp = function(appName) {
   return configurator.delete(appName)
@@ -58,6 +60,8 @@ describe('HeroIn', function () {
 
     deleteApp(baseAppName)
       .then(deleteApp(testAppName))
+      .then(deleteApp(addonAppName))
+      .then(deleteApp(rebuildAddonAppName))
       .then(configurator(baseAppConfig))
       .then(done)
       .catch(done);
@@ -68,6 +72,8 @@ describe('HeroIn', function () {
 
     deleteApp(baseAppName)
       .then(deleteApp(testAppName))
+      .then(deleteApp(addonAppName))
+      .then(deleteApp(rebuildAddonAppName))
       .then(done)
       .catch(done);
   });
@@ -84,9 +90,7 @@ describe('HeroIn', function () {
     this.timeout(10000);
 
     var updatedTestAppConfig = Object.assign({}, testAppConfig, {
-      addons: {
-        'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: 'updated-test-heroin-redis'}
-      }
+      addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: 'updated-test-heroin-redis'}}
     });
 
     configurator(updatedTestAppConfig).
@@ -105,9 +109,7 @@ describe('HeroIn', function () {
     this.timeout(10000);
 
     var updatedTestAppConfig = Object.assign({}, testAppConfig, {
-      addons: {
-        'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: 'base-heroin-redis'}
-      }
+      addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: 'base-heroin-redis'}}
     });
 
     configurator(updatedTestAppConfig).
@@ -162,5 +164,51 @@ describe('HeroIn', function () {
     then(done).
     catch(done);
   });
+
+  it.only('should not attach second addon of a same kind if the name is deleted but recreate it with default name', function(done) {
+    this.timeout(10000);
+
+    var updatedAddonAppConfig = Object.assign({}, addonAppConfig, {
+      addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev'}}
+    });
+
+    configurator(addonAppConfig).
+    then(function() {
+      return configurator(updatedAddonAppConfig);
+    }).
+    then(function() {
+      return configurator.export(addonAppName);
+    }).
+    then(function(actualAppConfig) {
+      assert.equal(actualAppConfig.addons['heroku-redis'].plan, 'heroku-redis:hobby-dev');
+      assert.equal(actualAppConfig.addons['heroku-redis'].name.split('-')[0], 'redis');
+    }).
+    then(done).
+    catch(done);
+  });
+
+  it('should not recreate an addon when no name is provided', function(done) {
+    this.timeout(20000);
+    var expectedAddonName;
+
+    configurator(rebuildAddonAppConfig).
+    then(function() {
+      return configurator.export(rebuildAddonAppName)
+    }).
+    then(function(initialAppConfig) {
+      expectedAddonName = initialAppConfig.addons['heroku-redis'].name
+    }).
+    then(function() {
+      return configurator(rebuildAddonAppConfig)
+    }).
+    then(function() {
+      return configurator.export(rebuildAddonAppName)
+    }).
+    then(function(actualAppConfig) {
+      assert.equal(actualAppConfig.addons['heroku-redis'].name, expectedAddonName)
+    }).
+    then(done).
+    catch(done);
+  })
 
 });
