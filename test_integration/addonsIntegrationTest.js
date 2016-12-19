@@ -193,22 +193,22 @@ describe('HeroIn', function () {
 
     configurator(rebuildAddonAppConfig).
     then(function() {
-      return configurator.export(rebuildAddonAppName)
+      return configurator.export(rebuildAddonAppName);
     }).
     then(function(initialAppConfig) {
-      expectedAddonName = initialAppConfig.addons['heroku-redis'].name
+      expectedAddonName = initialAppConfig.addons['heroku-redis'].name;
     }).
     then(function() {
-      return configurator(rebuildAddonAppConfig)
+      return configurator(rebuildAddonAppConfig);
     }).
     then(function() {
-      return configurator.export(rebuildAddonAppName)
+      return configurator.export(rebuildAddonAppName);
     }).
     then(function(actualAppConfig) {
-      assert.equal(actualAppConfig.addons['heroku-redis'].name, expectedAddonName)
+      assert.equal(actualAppConfig.addons['heroku-redis'].name, expectedAddonName);
     }).
     then(done).
     catch(done);
-  })
+  });
 
 });
