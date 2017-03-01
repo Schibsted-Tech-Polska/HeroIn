@@ -1,14 +1,15 @@
 var chai = require('chai'),
   assert = chai.assert,
   heroin = require('../lib/heroin'),
-  _ = require('lodash');
+  _ = require('lodash'),
+  unique = require("./appNameGenerator");
 
-var configurator = heroin(process.env.HEROKU_API_TOKEN);
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'ERROR'});
 
-var baseAppName = 'base-heroin-app';
-var testAppName = 'test-heroin-app';
-var addonAppName = 'addon-heroin-app';
-var rebuildAddonAppName = 'recreate-addon-heroin-app';
+var baseAppName = unique('base-heroin-app');
+var testAppName = unique('test-heroin-app');
+var addonAppName = unique('addon-heroin-app');
+var rebuildAddonAppName = unique('recreate-addon-heroin-app');
 
 var baseConfig = {
   region: 'eu',

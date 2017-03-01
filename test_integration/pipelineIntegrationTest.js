@@ -1,16 +1,17 @@
 var chai = require('chai'),
   assert = chai.assert,
   heroin = require('../lib/heroin'),
-  _ = require('lodash');
+  _ = require('lodash'),
+  unique = require('./appNameGenerator');
 
-var configurator = heroin(process.env.HEROKU_API_TOKEN);
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'ERROR'});
 
-var pipelineName = 'heroin-pipeline';
-var reviewApp = 'heroin-reviewing-app';
-var newReviewApp = 'heroin-review-app';
-var developmentApp = 'heroin-development-app';
-var stagingApp = 'heroin-staging-app';
-var productionApp = 'heroin-production-app';
+var pipelineName = unique('heroin-pipeline');
+var reviewApp = unique('heroin-reviewing-app');
+var newReviewApp = unique('heroin-review-app');
+var developmentApp = unique('heroin-development-app');
+var stagingApp = unique('heroin-staging-app');
+var productionApp = unique('heroin-production-app');
 var apps = [reviewApp, newReviewApp, developmentApp, stagingApp, productionApp];
 
 var pipelineConfig = {
@@ -79,5 +80,3 @@ describe('HeroIn', function () {
     catch(done);
   });
 });
-
-

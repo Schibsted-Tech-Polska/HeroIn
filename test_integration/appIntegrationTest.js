@@ -1,10 +1,11 @@
 var chai = require('chai'),
   assert = chai.assert,
   heroin = require('../lib/heroin'),
-  _ = require('lodash');
+  _ = require('lodash'),
+  unique = require('./appNameGenerator');
 
-var appName = 'test-lifecycle-heroin-app';
-var configurator = heroin(process.env.HEROKU_API_TOKEN);
+var appName = unique('test-lifecycle-heroin-app');
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'ERROR'});
 
 var sampleAppConfig = {
   name: appName,
@@ -49,9 +50,7 @@ var updatedAppConfig = {
 
 describe('HeroIn', function () {
 
-  beforeEach(function (done) {
-    this.timeout(30000);
-
+  function cleanUp(done) {
     configurator.delete(appName).then(function () {
         console.log('deleted app');
         done();
@@ -60,6 +59,18 @@ describe('HeroIn', function () {
         done();
       }
     );
+  }
+
+  beforeEach(function (done) {
+    this.timeout(30000);
+
+    cleanUp(done);
+  });
+
+  after(function (done) {
+    this.timeout(30000);
+
+    cleanUp(done);
   });
 
   it('should provide full Heroku infrastructure lifecycle', function (done) {
