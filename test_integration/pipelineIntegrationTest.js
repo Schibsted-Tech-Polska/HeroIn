@@ -4,7 +4,7 @@ var chai = require('chai'),
   _ = require('lodash'),
   unique = require('./appNameGenerator');
 
-var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'ERROR'});
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'NONE'});
 
 var pipelineName = unique('heroin-pipeline');
 var reviewApp = unique('heroin-reviewing-app');
@@ -24,12 +24,11 @@ var updatedPipelineConfig = {
   apps: {review: newReviewApp, staging: stagingApp, production: productionApp}
 };
 
-describe('HeroIn', function () {
+describe('HeroIn (Pipelines)', function () {
   before(function (done) {
     this.timeout(30000);
 
     Promise.all(apps.map(configurator.delete)).then(function () {
-      console.log('Deleted all test apps');
     }, function (err) {
       console.error('Could not delete apps', err);
     }).then(done);
@@ -39,7 +38,6 @@ describe('HeroIn', function () {
     this.timeout(30000);
 
     Promise.all(apps.map(configurator.delete)).then(function () {
-      console.log('Deleted all test apps');
     }, function (err) {
       console.error('Could not delete apps', err);
     }).then(done);

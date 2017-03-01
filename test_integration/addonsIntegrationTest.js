@@ -4,7 +4,7 @@ var chai = require('chai'),
   _ = require('lodash'),
   unique = require("./appNameGenerator");
 
-var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'ERROR'});
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'NONE'});
 
 var baseAppName = unique('base-heroin-app');
 var testAppName = unique('test-heroin-app');
@@ -48,13 +48,12 @@ var rebuildAddonAppConfig = Object.assign({}, baseConfig, {
 var deleteApp = function(appName) {
   return configurator.delete(appName)
     .then(function () {
-      console.log('Deleted app');
     }, function (err) {
       console.error('Could not delete app ', err);
     });
 };
 
-describe('HeroIn', function () {
+describe('HeroIn (Addons)', function () {
 
   before(function (done) {
     this.timeout(10000);

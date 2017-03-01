@@ -5,7 +5,7 @@ var chai = require('chai'),
   unique = require('./appNameGenerator');
 
 var appName = unique('test-lifecycle-heroin-app');
-var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'ERROR'});
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'NONE'});
 
 var sampleAppConfig = {
   name: appName,
@@ -48,11 +48,10 @@ var updatedAppConfig = {
 };
 
 
-describe('HeroIn', function () {
+describe('HeroIn (Core)', function () {
 
   function cleanUp(done) {
     configurator.delete(appName).then(function () {
-        console.log('deleted app');
         done();
       }, function (err) {
         console.error('could not delete app ', err);

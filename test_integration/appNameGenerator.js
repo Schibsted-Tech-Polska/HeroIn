@@ -7,4 +7,4 @@ var unique = hash.update((process.env.HEROKU_API_TOKEN || 'default').substring(0
 
 module.exports = function(name) {
   return name + unique;
-}
+};
