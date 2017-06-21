@@ -74,6 +74,24 @@ describe('HeroIn pipelines', function () {
       catch(done);
   });
 
+  it('should allow to put multiple apps in one pipeline', function (done) {
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+    var pipelineConfig = {
+      name: 'sample_pipeline',
+      apps: {production: ['sample_app1', 'sample_app2']}
+    };
+    configurator.
+      pipeline(pipelineConfig).
+      then(function () {
+        return configurator.pipeline('sample_pipeline');
+      }).
+      then(function (actualPipelineConfig) {
+        assert.deepEqual(actualPipelineConfig, pipelineConfig);
+      }).
+      then(done).
+      catch(done);
+  });
+
   function inMemoryHerokuClient() {
     var herokuClient = {
       pipelinesList: {sample_pipeline: {id: 'sample_pipeline', name: 'sample_pipeline'}},

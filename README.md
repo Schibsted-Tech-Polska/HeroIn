@@ -62,7 +62,12 @@ var configurator = heroin(process.env.HEROKU_API_TOKEN);
 
 configurator.pipeline({
   name: 'my-test-pipeline',
-  apps: {review: 'review-app', development: 'development-app', staging: 'staging-app', production: 'production-app'}
+  apps: {
+    review: 'review-app',
+    development: 'development-app',
+    staging: 'staging-app',
+    production: ['production-app-1', 'production-app-2']
+  }
 })
 
 configurator.pipeline('my-test-pipeline').then(function(result) {

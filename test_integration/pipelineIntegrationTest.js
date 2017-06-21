@@ -12,7 +12,8 @@ var newReviewApp = unique('heroin-review-app');
 var developmentApp = unique('heroin-development-app');
 var stagingApp = unique('heroin-staging-app');
 var productionApp = unique('heroin-production-app');
-var apps = [reviewApp, newReviewApp, developmentApp, stagingApp, productionApp];
+var productionAppMirror = unique('heroin-production-app-m');
+var apps = [reviewApp, newReviewApp, developmentApp, stagingApp, productionApp, productionAppMirror];
 
 var pipelineConfig = {
   name: pipelineName,
@@ -21,7 +22,7 @@ var pipelineConfig = {
 
 var updatedPipelineConfig = {
   name: pipelineName,
-  apps: {review: newReviewApp, staging: stagingApp, production: productionApp}
+  apps: {review: newReviewApp, staging: stagingApp, production: [productionApp, productionAppMirror]}
 };
 
 describe('HeroIn (Pipelines)', function () {
