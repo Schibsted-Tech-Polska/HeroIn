@@ -25,14 +25,29 @@ var updatedPipelineConfig = {
   apps: {review: newReviewApp, staging: stagingApp, production: [productionApp, productionAppMirror]}
 };
 
-describe('HeroIn (Pipelines)', function () {
-  before(function (done) {
-    this.timeout(30000);
+var mergedPipelineConfig = {
+  name: pipelineName,
+  apps: {review: [reviewApp, newReviewApp], development: developmentApp, staging: stagingApp}
+};
 
-    Promise.all(apps.map(configurator.delete)).then(function () {
-    }, function (err) {
-      console.error('Could not delete apps', err);
-    }).then(done);
+
+describe('HeroIn (Pipelines)', function () {
+  // clean up and setup apps before each test
+  beforeEach(function (done) {
+    this.timeout(50000);
+
+    Promise.all(apps.map(configurator.delete)).
+      then(function () {
+        return Promise.all(apps.
+            map(function (name) {
+              return {name: name};
+            }).
+            map(configurator));
+      }).
+      then(function () {
+        done();
+      }).
+      catch(done);
   });
 
   after(function (done) {
@@ -44,38 +59,85 @@ describe('HeroIn (Pipelines)', function () {
     }).then(done);
   });
 
-  it('should provide full Heroku pipeline support', function (done) {
+  it('should allow for creation of pipelines', function (done) {
     this.timeout(50000);
 
-    Promise.all(
-      apps.
-      map(function (name) {
-        return {name: name};
+    configurator.pipeline(pipelineConfig).
+      then(function () {
+        return configurator.pipeline(pipelineName);
       }).
-      map(configurator)
-    ).
-    then(function () {
-      return configurator.pipeline(pipelineConfig); // create new pipeline
-    }).
-    then(function () {
-      return configurator.pipeline(pipelineConfig); // no op update
-    }).
-    then(function () {
-      return configurator.pipeline(pipelineName);
-    }).
-    then(function (actualPipelineConfig) {
-      assert.deepEqual(actualPipelineConfig, pipelineConfig);
-    }).
-    then(function() {
-      return configurator.pipeline(updatedPipelineConfig);
-    }).
-    then(function() {
-      return configurator.pipeline(pipelineName);
-    }).
-    then(function (actualPipelineConfig) {
-      assert.deepEqual(actualPipelineConfig, updatedPipelineConfig);
-    }).
-    then(done).
-    catch(done);
+      then(function (actualPipelineConfig) {
+        assert.deepEqual(actualPipelineConfig, pipelineConfig);
+      }).
+      then(done).
+      catch(done);
   });
+
+  it('should allow for updating pipeline', function (done) {
+    this.timeout(50000);
+
+    configurator.pipeline(pipelineConfig).
+      then(function () {
+        return configurator.pipeline(updatedPipelineConfig);
+      }).
+      then(function () {
+        return configurator.pipeline(pipelineName);
+      }).
+      then(function (actualPipelineConfig) {
+        pipelinesEqual(actualPipelineConfig, updatedPipelineConfig);
+      }).
+      then(done).
+      catch(done);
+  });
+
+  it('should allow for adding apps to pipeline', function (done) {
+    this.timeout(50000);
+
+    configurator.pipeline(pipelineConfig).
+      then(function () {
+        return configurator.addToPipeline({
+          name: pipelineName,
+          apps: {review: newReviewApp}
+        });
+      }).
+      then(function () {
+        return configurator.pipeline(pipelineName);
+      }).
+      then(function (actualPipelineConfig) {
+        pipelinesEqual(actualPipelineConfig, mergedPipelineConfig);
+      }).
+      then(done).
+      catch(done);
+  });
+
+  it('should treat adding operation as creation if pipeline does not exist', function (done) {
+    this.timeout(50000);
+
+    configurator.addToPipeline(pipelineConfig).
+      then(function () {
+        return configurator.pipeline(pipelineName);
+      }).
+      then(function (actualPipelineConfig) {
+        assert.deepEqual(actualPipelineConfig, pipelineConfig);
+      }).
+      then(done).
+      catch(done);
+  });
+
 });
+
+function sortedAppsFrom(pipeline) {
+  return Object.keys(pipeline.apps).
+    reduce(function (all, stage) {
+      all[stage] = _.flatten([pipeline.apps[stage]]).
+        sort(function (appA, appB) {
+          return appA < appB;
+        });
+      return all;
+    }, {});
+}
+
+function pipelinesEqual(pipelineA, pipelineB) {
+  assert.equal(pipelineA.name, pipelineB.name);
+  assert.deepEqual(sortedAppsFrom(pipelineA), sortedAppsFrom(pipelineB));
+}

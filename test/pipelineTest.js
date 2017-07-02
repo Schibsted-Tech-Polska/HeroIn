@@ -92,19 +92,66 @@ describe('HeroIn pipelines', function () {
       catch(done);
   });
 
+  it('should be able to add apps to pipeline', function (done) {
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+    var pipelineConfig = {
+      name: 'sample_pipeline',
+      apps: {production: 'sample_app1'}
+    };
+
+    configurator.pipeline(pipelineConfig).
+      then(function () {
+        return configurator.addToPipeline({
+          name: 'sample_pipeline',
+          apps: {production: 'sample_app2'}
+        });
+      }).
+      then(function () {
+        return configurator.pipeline('sample_pipeline');
+      }).
+      then(function (actualPipelineConfig) {
+        assert.deepEqual(actualPipelineConfig, {
+          name: 'sample_pipeline',
+          apps: {production: ['sample_app1', 'sample_app2']}
+        });
+      }).
+      then(done).
+      catch(done);
+  });
+
+  it('should treat adding operation as creation if pipeline does not exist', function (done) {
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+    var pipelineConfig = {
+      name: 'sample_pipeline2',
+      apps: {staging: 'sample_app1'}
+    };
+    configurator.
+      addToPipeline(pipelineConfig).
+      then(function () {
+        return configurator.pipeline('sample_pipeline2');
+      }).
+      then(function (actualPipelineConfig) {
+        assert.deepEqual(actualPipelineConfig, pipelineConfig);
+      }).
+      then(done).
+      catch(done);
+  });
+
   function inMemoryHerokuClient() {
     var herokuClient = {
       pipelinesList: {sample_pipeline: {id: 'sample_pipeline', name: 'sample_pipeline'}},
       appsList: {sample_app1: {name: 'sample_app1'}, sample_app2: {name: 'sample_app2'}},
-      couplings: [{
-        app: {
-          id: 'sample_app2',
-        },
-        pipeline: {
-          id: 'sample_pipeline'
-        },
-        stage: 'production'
-      }],
+      couplings: {
+        'sample_pipeline': [{
+          app: {
+            id: 'sample_app2',
+          },
+          pipeline: {
+            id: 'sample_pipeline'
+          },
+          stage: 'production'
+        }]
+      },
 
       apps: function (appId) {
         return {
@@ -117,7 +164,10 @@ describe('HeroIn pipelines', function () {
       pipelineCouplings: function () {
         return {
           create: function (coupling) {
-            herokuClient.couplings.push({
+            if (!herokuClient.couplings[coupling.pipeline]) {
+              herokuClient.couplings[coupling.pipeline] = [];
+            }
+            herokuClient.couplings[coupling.pipeline].push({
               app: {
                 id: coupling.app
               },
@@ -136,13 +186,13 @@ describe('HeroIn pipelines', function () {
           pipelineCouplings: function () {
             return {
               list: function () {
-                return Promise.resolve(herokuClient.couplings);
+                return Promise.resolve(herokuClient.couplings[name]);
               }
             };
           },
           delete: function () {
             delete herokuClient.pipelinesList[name];
-            herokuClient.couplings = [];
+            herokuClient.couplings[name] = [];
             return Promise.resolve();
           },
           create: function (pipelineConfig) {
@@ -151,15 +201,14 @@ describe('HeroIn pipelines', function () {
             return Promise.resolve(pipeline);
           },
           info: function () {
-            return Promise.resolve(herokuClient.pipelinesList[name]);
+            if (herokuClient.pipelinesList[name]) {
+              return Promise.resolve(herokuClient.pipelinesList[name]);
+            }
+            return Promise.reject();
           }
         };
       }
     };
-
     return herokuClient;
   }
-
-
 });
-
