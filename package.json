@@ -21,7 +21,7 @@
   "author": "Mateusz Kwasniewski <mateusz.kwasniewski@schibsted.pl>",
   "license": "MIT",
   "devDependencies": {
-    "chai": "3.5.0",
+    "chai": "4.1.0",
     "istanbul": "0.4.4",
     "jshint": "2.8.0",
     "mocha": "2.4.5"

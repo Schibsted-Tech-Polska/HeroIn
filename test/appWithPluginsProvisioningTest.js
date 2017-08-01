@@ -4,9 +4,17 @@ var chai = require('chai'),
   _ = require('lodash'),
   inMemoryHerokuClient = require('./inMemoryHerokuClient');
 
+var instantClock = {
+  wait: function() {
+    return function() {
+      return Promise.resolve();
+    };
+  }
+};
+
 describe('Plugin', function () {
   it('should enhance addon behavior when provisioning', function (done) {
-    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR', clock: instantClock});
     configurator.addPlugin({
       librato: {
         alerts: {
@@ -55,7 +63,7 @@ describe('Plugin', function () {
   });
 
   it('should enhance addon behavior when exporting', function (done) {
-    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR', clock: instantClock});
     configurator.addPlugin({
       librato: {
         alerts: {
@@ -115,7 +123,7 @@ describe('Plugin', function () {
   });
 
   it('listed last wins when conflicting names', function (done) {
-    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR', clock: instantClock});
     configurator.addPlugin({
       librato: {
         alerts: {

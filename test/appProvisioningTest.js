@@ -5,11 +5,18 @@ var chai = require('chai'),
   inMemoryHerokuClient = require('./inMemoryHerokuClient');
 
 var appName = 'sample-heroku-app';
+var instantClock = {
+  wait: function() {
+    return function() {
+      return Promise.resolve();
+    };
+  }
+};
 
 describe('HeroIn', function () {
 
   beforeEach(function (done) {
-    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR', clock: instantClock});
     configurator.delete(appName).then(function () {
         done();
       }, function (err) {
@@ -30,7 +37,7 @@ describe('HeroIn', function () {
 
   it('should prompt you for an app name', function () {
     try {
-      var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+      var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR', clock: instantClock});
       configurator({});
     } catch (e) {
       assert.equal(e.message, 'Please specify app name');
@@ -38,7 +45,7 @@ describe('HeroIn', function () {
   });
 
   it('should delete app by name', function (done) {
-    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR', clock: instantClock});
     configurator({name: appName}).then(function () {
       return configurator.delete(appName);
     }).then(function () {
@@ -52,7 +59,7 @@ describe('HeroIn', function () {
   });
 
   it('should create heroku app', function (done) {
-    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR', clock: instantClock});
     var appConfiguration = {
       name: appName,
       region: 'eu',
@@ -87,8 +94,10 @@ describe('HeroIn', function () {
       assert.equal(result.region, 'eu');
       assert.isUndefined(result.ignore_me);
       assert.equal(result.config_vars.NODE_ENV, 'production');
-      assert.include(result.collaborators, 'mateusz.kwasniewski@schibsted.pl');
-      assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
+      assert.deepInclude(result.collaborators,
+        { email: 'mateusz.kwasniewski@schibsted.pl', permissions: ['view', 'deploy', 'operate', 'manage'] });
+      assert.deepInclude(result.collaborators,
+        { email: 'kwasniewski.mateusz@gmail.com', permissions: ['view', 'deploy', 'operate', 'manage'] });
       assert.equal(result.features.preboot.enabled, false); // preboot doesn't work on a free tier
       assert.equal(result.features['log-runtime-metrics'].enabled, true);
       assert.deepEqual(result.addons.logentries, {plan: 'logentries:le_tryit'});
@@ -107,19 +116,28 @@ describe('HeroIn', function () {
     };
     var updatedConfiguration = {
       name: appName,
-      collaborators: ['krystian.jarmicki@schibsted.pl', 'kwasniewski.mateusz@gmail.com']
+      collaborators: ['krystian.jarmicki@schibsted.pl', {
+        email: 'kwasniewski.mateusz@gmail.com',
+        permissions: ['view']
+      }]
     };
 
     updateTest(appConfiguration, updatedConfiguration, function (result) {
-      assert.include(result.collaborators, 'krystian.jarmicki@schibsted.pl');
-      assert.include(result.collaborators, 'kwasniewski.mateusz@gmail.com');
-      assert.notInclude(result.collaborators, 'miroslaw.kucharzyk@schibsted.pl');
+      assert.deepInclude(result.collaborators, {
+        email: 'krystian.jarmicki@schibsted.pl', permissions: ['view', 'deploy', 'operate', 'manage']
+      });
+      assert.deepInclude(result.collaborators, {
+        email: 'kwasniewski.mateusz@gmail.com', permissions: ['view']
+      });
+      assert.notDeepInclude(result.collaborators, {
+        email: 'miroslaw.kucharzyk@schibsted.pl', permissions: ['view', 'deploy', 'operate', 'manage']
+      });
       done();
     }, done);
   });
 
   it('should update basic app info', function (done) {
-    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+    var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR', clock: instantClock});
     var appConfiguration = {
       name: appName,
       region: 'eu'
@@ -303,7 +321,7 @@ describe('HeroIn', function () {
 });
 
 function updateTest(originalConfiguration, updatedConfiguration, success, error) {
-  var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR'});
+  var configurator = heroin(inMemoryHerokuClient(), {logLevel: 'ERROR', clock: instantClock});
   configurator(originalConfiguration).then(function () {
     return configurator(updatedConfiguration);
   }).then(function () {

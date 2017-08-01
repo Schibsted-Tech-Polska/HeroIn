@@ -88,7 +88,7 @@ What parts of Heroku infrastructure are supported (create, update, delete, expor
 - app
 - config/environment variables
 - addons (basic plan setting)
-- collaborators
+- collaborators (including permissions)
 - features (e.g. preboot, log-runtime-metrics)
 - dyno formation (aka. dyno scaling)
 - log drains 
@@ -103,6 +103,7 @@ var sampleConfiguration = {
     name: 'myapp',
     region: 'eu',
     maintenance: false,
+    organization: 'ACME',
     stack: 'cedar-14',
     config_vars: {
         FEATURE_X_DISABLED: 'true',
@@ -118,6 +119,10 @@ var sampleConfiguration = {
     collaborators: [
         'someone@example.com',
         'someonelse@example.com',
+        {
+            email: 'someonespecial@example.com',
+            permissions: ['view', 'deploy']
+        }
     ],
     features: {
         'runtime-dyno-metadata': {enabled: false},

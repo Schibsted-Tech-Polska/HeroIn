@@ -148,18 +148,33 @@ var stubHerokuClient = {
         };
       },
       collaborators: function (name) {
+        function collaborator(email) {
+          return {user: {email: email}};
+        }
+
         return {
           list: function () {
-            return Promise.resolve(stubHerokuClient._app.collaborators.map(function (email) {
-              return {user: {email: email}};
-            }));
+            return Promise.resolve(stubHerokuClient._app.collaborators);
           },
           create: function (config) {
-            stubHerokuClient._app.collaborators.push(config.user);
+            stubHerokuClient._app.collaborators.push(collaborator(config.user));
             return Promise.resolve();
           },
           delete: function () {
-            stubHerokuClient._app.collaborators = _.without(stubHerokuClient._app.collaborators, name);
+            stubHerokuClient._app.collaborators = stubHerokuClient._app.collaborators.filter(function (collaborator) {
+              return collaborator.user.email !== name;
+            });
+            return Promise.resolve();
+          },
+          update: function (config) {
+            var collaborator = stubHerokuClient._app.collaborators.filter(function (collaborator) {
+              return collaborator.user.email === name;
+            })[0];
+            collaborator.permissions = config.permissions.map(function (permission) {
+              return {
+                name: permission
+              };
+            });
             return Promise.resolve();
           }
         };
@@ -264,7 +279,8 @@ var stubHerokuClient = {
         var apps = stubHerokuClient.apps(app_name);
         return {
           create: apps.create,
-          info: apps.info
+          info: apps.info,
+          collaborators: apps.collaborators
         };
       }
     };

@@ -5,7 +5,7 @@ var chai = require('chai'),
   unique = require('./appNameGenerator');
 
 var appName = unique('test-lifecycle-heroin-app');
-var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'NONE'});
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'ERROR'});
 
 var sampleAppConfig = {
   name: appName,
