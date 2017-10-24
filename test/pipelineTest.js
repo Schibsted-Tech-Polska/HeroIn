@@ -161,13 +161,14 @@ describe('HeroIn pipelines', function () {
         };
       },
 
-      pipelineCouplings: function () {
+      pipelineCouplings: function (couplingId) {
         return {
           create: function (coupling) {
             if (!herokuClient.couplings[coupling.pipeline]) {
               herokuClient.couplings[coupling.pipeline] = [];
             }
             herokuClient.couplings[coupling.pipeline].push({
+              id: Math.ceil(Math.random() * 10000),
               app: {
                 id: coupling.app
               },
@@ -177,6 +178,14 @@ describe('HeroIn pipelines', function () {
               }
             });
             return Promise.resolve();
+          },
+          delete: function () {
+            Object.keys(herokuClient.couplings).forEach(function (couplingsGroup) {
+              herokuClient.couplings[couplingsGroup] = herokuClient.couplings[couplingsGroup].
+                filter(function (coupling) {
+                  return coupling.id !== couplingId;
+                });
+            });
           }
         };
       },

@@ -56,7 +56,7 @@ var deleteApp = function(appName) {
 describe('HeroIn (Addons)', function () {
 
   before(function (done) {
-    this.timeout(10000);
+    this.timeout(15000);
 
     deleteApp(baseAppName)
       .then(deleteApp(testAppName))
@@ -68,7 +68,7 @@ describe('HeroIn (Addons)', function () {
   });
 
   after(function (done) {
-    this.timeout(10000);
+    this.timeout(15000);
 
     deleteApp(baseAppName)
       .then(deleteApp(testAppName))
@@ -79,7 +79,7 @@ describe('HeroIn (Addons)', function () {
   });
 
   afterEach(function (done) {
-    this.timeout(10000);
+    this.timeout(15000);
 
     deleteApp(testAppName)
       .then(done)
@@ -87,7 +87,7 @@ describe('HeroIn (Addons)', function () {
   });
 
   it('should delete old addon and create a fresh one when providing a new addon name', function(done) {
-    this.timeout(10000);
+    this.timeout(15000);
 
     var updatedTestAppConfig = Object.assign({}, testAppConfig, {
       addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: 'updated-test-heroin-redis'}}
@@ -106,7 +106,7 @@ describe('HeroIn (Addons)', function () {
   });
 
   it('should successfully attach addon from another app when its name is provided and delete old one', function(done) {
-    this.timeout(10000);
+    this.timeout(15000);
 
     var updatedTestAppConfig = Object.assign({}, testAppConfig, {
       addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: 'base-heroin-redis'}}
@@ -125,7 +125,7 @@ describe('HeroIn (Addons)', function () {
   });
 
   it('should create an addon for an app if it doesnt exist', function(done) {
-    this.timeout(10000);
+    this.timeout(15000);
 
     var updatedTestAppConfig = Object.assign({}, testAppConfig, {
       addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev'}}
@@ -144,7 +144,7 @@ describe('HeroIn (Addons)', function () {
   });
 
   it('should attach an addon if an app has no addon of that type, but the name is taken', function(done) {
-    this.timeout(10000);
+    this.timeout(15000);
 
     var updatedTestAppConfig = Object.assign({}, testAppConfig, {
       addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: 'base-heroin-redis'}}
@@ -166,7 +166,7 @@ describe('HeroIn (Addons)', function () {
   });
 
   it('should not attach second addon of a same kind if the name is deleted but recreate it with default name', function(done) {
-    this.timeout(10000);
+    this.timeout(15000);
 
     var updatedAddonAppConfig = Object.assign({}, addonAppConfig, {
       addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev'}}
