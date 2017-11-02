@@ -110,6 +110,32 @@ describe('HeroIn (Pipelines)', function () {
       catch(done);
   });
 
+  it.only('should ignore duplicating apps when adding to pipeline', function (done) {
+    this.timeout(50000);
+
+    configurator.pipeline(pipelineConfig).
+      then(function () {
+        return configurator.addToPipeline({
+          name: pipelineName,
+          apps: {review: newReviewApp}
+        });
+      }).
+      then(function () {
+        return configurator.addToPipeline({
+          name: pipelineName,
+          apps: {review: newReviewApp}
+        });
+      }).
+      then(function () {
+        return configurator.pipeline(pipelineName);
+      }).
+      then(function (actualPipelineConfig) {
+        pipelinesEqual(actualPipelineConfig, mergedPipelineConfig);
+      }).
+      then(done).
+      catch(done);
+  });
+
   it('should treat adding operation as creation if pipeline does not exist', function (done) {
     this.timeout(50000);
 
