@@ -138,7 +138,7 @@ var sampleConfiguration = {
         'http://stats1.example.com:7000',
         'syslog://api.logentries.com:9000'
     ],
-    domains: ['mydomain.com', 'myapp.herokuapp.com'],
+    domains: ['mydomain.com', 'otherdomain.com'],
     buildpacks: ['https://github.com/heroku/heroku-buildpack-nodejs#yarn']
 };
 ```
