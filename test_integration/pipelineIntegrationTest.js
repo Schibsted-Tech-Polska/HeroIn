@@ -110,7 +110,7 @@ describe('HeroIn (Pipelines)', function () {
       catch(done);
   });
 
-  it.only('should ignore duplicating apps when adding to pipeline', function (done) {
+  it('should ignore duplicating apps when adding to pipeline', function (done) {
     this.timeout(50000);
 
     configurator.pipeline(pipelineConfig).

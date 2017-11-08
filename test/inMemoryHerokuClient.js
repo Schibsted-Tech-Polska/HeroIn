@@ -116,6 +116,9 @@ var stubHerokuClient = {
                 id: name,
                 addon_service: {
                   name: name
+                },
+                app: {
+                  name: app_name
                 }
               };
             });

@@ -53,6 +53,38 @@ var deleteApp = function(appName) {
     });
 };
 
+var wait = function(amount) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, amount);
+  });
+};
+
+var repeatUntilConditionSatisfied = function(spec) {
+  var repeat = spec.repeat;
+  var condition = spec.condition;
+  var interval = spec.interval || 1000 * 30;
+  var retries = typeof spec.retries === 'number' ? spec.retries : 10;
+
+  if (retries === 0) {
+    throw new Error('Could not satisfy condition: ' + condition.toString());
+  }
+  return wait(interval).
+    then(function () {
+      return repeat();
+    }).
+    then(function (result) {
+      if (!condition(result)) {
+        return repeatUntilConditionSatisfied({
+          repeat: repeat,
+          condition: condition,
+          interval: interval,
+          retries: --retries
+        });
+      }
+      return result;
+    });
+};
+
 describe('HeroIn (Addons)', function () {
 
   before(function (done) {
@@ -211,4 +243,42 @@ describe('HeroIn (Addons)', function () {
     catch(done);
   });
 
+  it('should keep config vars provided by addons attached to a different owner app', function(done) {
+    this.timeout(500000);
+    var redisUrl;
+
+      configurator(rebuildAddonAppConfig).
+        then(function () {
+          return configurator.export(rebuildAddonAppConfig.name);
+        }).
+        then(function (initialAppConfig) {
+          var attachedTestAppConfig = Object.assign({}, testAppConfig, {
+            addons: {'heroku-redis': {plan: 'heroku-redis:hobby-dev', name: initialAppConfig.addons['heroku-redis'].name}}
+          });
+          return configurator(attachedTestAppConfig);
+        }).
+        then(function() {
+          // wait until env var is set by redis (it takes a while)
+          return repeatUntilConditionSatisfied({
+            repeat: function () {
+              return configurator.export(testAppConfig.name);
+            },
+            condition: function (actualAppConfig) {
+              return Boolean(actualAppConfig.config_vars.REDIS_URL);
+            }
+          });
+        }).
+        then(function (actualAppConfig) {
+          redisUrl = actualAppConfig.config_vars.REDIS_URL;
+          return configurator(testAppConfig);
+        }).
+        then(function () {
+          return configurator.export(testAppConfig.name);
+        }).
+        then(function (actualAppConfig) {
+          assert.equal(redisUrl, actualAppConfig.config_vars.REDIS_URL);
+        }).
+        then(done).
+        catch(done);
+  });
 });
