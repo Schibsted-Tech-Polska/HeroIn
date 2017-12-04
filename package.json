@@ -1,6 +1,6 @@
 {
   "name": "heroin-js",
-  "version": "1.19.6",
+  "version": "1.20.0",
   "description": "Heroku Infrastructure As A Code",
   "main": "lib/heroin.js",
   "repository": "git@github.com:Schibsted-Tech-Polska/HeroIn.git",
