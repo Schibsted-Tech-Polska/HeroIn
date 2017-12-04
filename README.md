@@ -86,6 +86,7 @@ Principles:
 What parts of Heroku infrastructure are supported (create, update, delete, export):
 ------
 - app
+- acm
 - config/environment variables
 - addons (basic plan setting)
 - collaborators (including permissions)
@@ -100,6 +101,7 @@ Sample Configuration
 ------
 ```javascript
 var sampleConfiguration = {
+    acm: false,
     name: 'myapp',
     region: 'eu',
     maintenance: false,

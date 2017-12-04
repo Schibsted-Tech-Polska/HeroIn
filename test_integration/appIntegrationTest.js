@@ -23,8 +23,9 @@ var sampleAppConfig = {
   features: {
     'log-runtime-metrics': {enabled: true},
   },
+  // formation is not set anyway because it requires code deployment
   formation: [{process: 'web', quantity: 1, size: 'Free'}],
-  buildpacks: ['https://github.com/heroku/heroku-buildpack-nodejs#yarn']
+  buildpacks: ['heroku/nodejs']
 };
 
 var updatedAppConfig = {
@@ -43,8 +44,8 @@ var updatedAppConfig = {
   features: {
     'log-runtime-metrics': {enabled: false},
   },
-  formation: [{process: 'web', quantity: 1, size: 'Free'}],
-  buildpacks: ['https://github.com/heroku/heroku-buildpack-nodejs#yarn']
+  formation: [{process: 'web', quantity: 1, size: 'Hobby'}],
+  buildpacks: ['heroku/nodejs']
 };
 
 
