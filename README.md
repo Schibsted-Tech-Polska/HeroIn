@@ -75,6 +75,38 @@ configurator.pipeline('my-test-pipeline').then(function(result) {
 });
 ```
 
+1 minute tutorial: teams support
+------
+
+```javascript
+var heroin = require('heroin-js');
+
+var configurator = heroin(process.env.HEROKU_API_TOKEN);
+
+configurator.team({
+  name: 'my-test-team',
+  default: true,
+  members: [
+    { email: 'someone@example.com', role: 'admin' },
+    'someoneelse@example.com' // will have a member role by default
+  ],
+  // credit card info is required to create a team, but not to manage it
+  address_1: process.env.ADDRESS,
+  city: process.env.CITY,
+  country: process.env.COUNTRY,
+  card_number: process.env.CARD_NUMBER,
+  cvv: process.env.CVV,
+  expiration_month: process.env.EXPIRATION_MONTH,
+  expiration_year: process.env.EXPIRATION_YEAR,
+  first_name: process.env.FIRST_NAME,
+  last_name: process.env.LAST_NAME
+});
+
+configurator.team('my-test-team').then(function(result) {
+	console.log(result);
+});
+```
+
 Principles:
 ------
 - don't reinvent config names, use original names from Heroku API

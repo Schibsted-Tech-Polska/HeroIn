@@ -7,7 +7,7 @@
   "scripts": {
     "test": "mocha --recursive",
     "test:integration": "mocha test_integration",
-    "test:integration:debug": "node --inspect node_modules/mocha/bin/_mocha test_integration",
+    "test:integration:debug": "node --inspect --inspect-brk node_modules/mocha/bin/_mocha test_integration",
     "test:coverage": "istanbul cover node_modules/mocha/bin/_mocha --dir ./coverage --report lcov -- -R spec --recursive --timeout 7000 ./test",
     "lint": "jshint --exclude=node_modules **/*.js"
   },
@@ -23,12 +23,13 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "4.1.0",
+    "dotenv": "4.0.0",
     "istanbul": "0.4.4",
     "jshint": "2.8.0",
     "mocha": "2.4.5"
   },
   "dependencies": {
     "heroku-client": "2.4.3",
-    "lodash": "4.12.0"
+    "lodash": "4.17.4"
   }
 }

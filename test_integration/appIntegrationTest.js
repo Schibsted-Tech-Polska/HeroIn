@@ -7,6 +7,8 @@ var chai = require('chai'),
 var appName = unique('test-lifecycle-heroin-app');
 var configurator = heroin(process.env.HEROKU_API_TOKEN, {logLevel: 'ERROR'});
 
+// note that some of the tests require that you have a verified account with credit card attached
+// but tests won't attach any plan/plugin that is not free
 var sampleAppConfig = {
   name: appName,
   region: 'eu',
