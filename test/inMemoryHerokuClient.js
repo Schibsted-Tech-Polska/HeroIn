@@ -1,5 +1,29 @@
 var _ = require('lodash');
 
+var paths = {
+  matchesSingleCollaborator: function(path) {
+    var matchesAny = paths.matchesAnyCollaborators(path);
+    if(!matchesAny) {
+      return null;
+    }
+    return path.match(/([a-z_-]+)\/collaborators\/(.+)/);
+  },
+  matchesCollaborators: function(path) {
+    return path.match(/^\/apps\/([a-z_-]+)\/collaborators/);
+  },
+  matchesTeamCollaborators: function(path) {
+    return path.match(/^\/teams\/apps\/([a-z_-]+)\/collaborators/);
+  },
+  matchesOrganizationCollaborators: function(path) {
+    return path.match(/^\/organizations\/apps\/([a-z_-]+)\/collaborators/);
+  },
+  matchesAnyCollaborators: function(path) {
+    return paths.matchesCollaborators(path) ||
+      paths.matchesOrganizationCollaborators(path) ||
+      paths.matchesTeamCollaborators(path);
+  }
+};
+
 var stubHerokuClient = {
   _app: {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}, log_drains: [], domains: [], buildpacks: []},
   clean: function () {
@@ -13,6 +37,34 @@ var stubHerokuClient = {
       domains: [],
       buildpacks: []
     };
+  },
+  get: function (path) {
+    var matchesCollaborators = paths.matchesAnyCollaborators(path);
+    if(matchesCollaborators) {
+      return stubHerokuClient.apps(matchesCollaborators[1]).collaborators().list();
+    }
+    return Promise.reject('nothing matched in the client');
+  },
+  post: function (path, body) {
+    var matchesCollaborators = paths.matchesAnyCollaborators(path);
+    if(matchesCollaborators) {
+      return stubHerokuClient.apps(matchesCollaborators[1]).collaborators().create(body);
+    }
+    return Promise.reject('nothing matched in the client');
+  },
+  patch: function(path, body) {
+    var matchesCollaborator = paths.matchesSingleCollaborator(path);
+    if(matchesCollaborator) {
+      return stubHerokuClient.apps(matchesCollaborator[1]).collaborators(matchesCollaborator[2]).update(body);
+    }
+    return Promise.reject('nothing matched in the client');
+  },
+  delete: function(path) {
+    var matchesCollaborator = paths.matchesSingleCollaborator(path);
+    if(matchesCollaborator) {
+      return stubHerokuClient.apps(matchesCollaborator[1]).collaborators(matchesCollaborator[2]).delete();
+    }
+    return Promise.reject('nothing matched in the client');
   },
   apps: function (app_name) {
     return {

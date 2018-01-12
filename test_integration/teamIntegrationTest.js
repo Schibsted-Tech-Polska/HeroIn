@@ -72,9 +72,8 @@ describe('HeroIn (teams)', function () {
       then(function () {
         var teamWithoutInvitedMember = sampleTeam(teamName);
         teamWithoutInvitedMember.members = teamWithoutInvitedMember.members.filter(function (member) {
-          return typeof member === 'string';
+          return typeof member !== 'string';
         });
-        console.log(teamWithoutInvitedMember);
         return configurator.team(teamWithoutInvitedMember);
       }).
       then(function () {
@@ -93,7 +92,7 @@ describe('HeroIn (teams)', function () {
         return configurator.team(teamName);
       }).
       then(function (updatedTeam) {
-        var invitedMember = findInvitedMember(team);
+        var invitedMember = findInvitedMember(updatedTeam);
         assert.include(invitedMember, {
           email: 'krystian.jarmicki@schibsted.pl', role: 'member'
         });
