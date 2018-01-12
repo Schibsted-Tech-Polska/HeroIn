@@ -121,6 +121,7 @@ What parts of Heroku infrastructure are supported (create, update, delete, expor
 - acm
 - config/environment variables
 - addons (basic plan setting)
+- teams
 - collaborators (including permissions)
 - features (e.g. preboot, log-runtime-metrics)
 - dyno formation (aka. dyno scaling)
@@ -137,7 +138,7 @@ var sampleConfiguration = {
     name: 'myapp',
     region: 'eu',
     maintenance: false,
-    organization: 'ACME',
+    team: 'ACME',
     stack: 'cedar-14',
     config_vars: {
         FEATURE_X_DISABLED: 'true',

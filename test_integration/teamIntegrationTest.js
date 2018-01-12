@@ -29,7 +29,7 @@ function withCreditCardInfo(teamConfiguration) {
 }
 
 if(!process.env.CARD_NUMBER) {
-  describe.only('HeroIn (teams)', function () {
+  describe.skip('HeroIn (teams)', function () {
     it('no credit card info found, skipping');
   });
   return;

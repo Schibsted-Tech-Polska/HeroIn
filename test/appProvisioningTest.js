@@ -75,6 +75,7 @@ describe('HeroIn', function () {
           plan: 'librato:development'
         }
       },
+      team: 'some-team',
       collaborators: ['mateusz.kwasniewski@schibsted.pl', 'kwasniewski.mateusz@gmail.com'],
       features: {
         preboot: {enabled: false},
@@ -94,6 +95,7 @@ describe('HeroIn', function () {
       assert.equal(result.region, 'eu');
       assert.isUndefined(result.ignore_me);
       assert.equal(result.config_vars.NODE_ENV, 'production');
+      assert.equal(result.team, 'some-team');
       assert.deepInclude(result.collaborators,
         { email: 'mateusz.kwasniewski@schibsted.pl', permissions: ['view', 'deploy', 'operate', 'manage'] });
       assert.deepInclude(result.collaborators,
@@ -317,6 +319,22 @@ describe('HeroIn', function () {
     }, done);
   });
 
+  it('should manage teams', function (done) {
+    var appConfiguration = {
+      name: appName,
+      team: 'some-team'
+    };
+
+    var updatedConfiguration = {
+      name: appName,
+      team: 'other-team'
+    };
+
+    updateTest(appConfiguration, updatedConfiguration, function (result) {
+      assert.equal(result.team, updatedConfiguration.team);
+      done();
+    }, done);
+  });
 
 });
 

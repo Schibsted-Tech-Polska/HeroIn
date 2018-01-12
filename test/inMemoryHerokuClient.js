@@ -14,21 +14,31 @@ var paths = {
   matchesTeamCollaborators: function(path) {
     return path.match(/^\/teams\/apps\/([a-z_-]+)\/collaborators/);
   },
-  matchesOrganizationCollaborators: function(path) {
-    return path.match(/^\/organizations\/apps\/([a-z_-]+)\/collaborators/);
-  },
   matchesAnyCollaborators: function(path) {
     return paths.matchesCollaborators(path) ||
-      paths.matchesOrganizationCollaborators(path) ||
       paths.matchesTeamCollaborators(path);
+  },
+  matchesAppCreate: function(path) {
+    return path.match(/^\/apps$/);
+  },
+  matchesTeamAppCreate: function(path) {
+    return path.match(/^\/teams\/apps$/);
+  },
+  matchesAnyCreate: function(path) {
+    return paths.matchesAppCreate(path) ||
+        paths.matchesTeamAppCreate(path);
+  },
+  matchesTeamApp: function(path) {
+    return path.match(/^\/teams\/apps\/([a-z_-]+)$/);
   }
 };
 
 var stubHerokuClient = {
-  _app: {name: '', collaborators: [], config_vars: {}, features: {}, addons: {}, log_drains: [], domains: [], buildpacks: []},
+  _app: {name: '', team: '', collaborators: [], config_vars: {}, features: {}, addons: {}, log_drains: [], domains: [], buildpacks: []},
   clean: function () {
     stubHerokuClient._app = {
       name: '',
+      team: '',
       collaborators: [],
       config_vars: {},
       features: {},
@@ -43,35 +53,51 @@ var stubHerokuClient = {
     if(matchesCollaborators) {
       return stubHerokuClient.apps(matchesCollaborators[1]).collaborators().list();
     }
-    return Promise.reject('nothing matched in the client');
+    throw new Error('nothing matchedin the client for ' + path);
   },
   post: function (path, body) {
     var matchesCollaborators = paths.matchesAnyCollaborators(path);
     if(matchesCollaborators) {
       return stubHerokuClient.apps(matchesCollaborators[1]).collaborators().create(body);
     }
-    return Promise.reject('nothing matched in the client');
+    var matchesCreate = paths.matchesAnyCreate(path);
+    if(matchesCreate) {
+      return stubHerokuClient.apps().create(body).
+        then(function () {
+          if(body.team) {
+            stubHerokuClient._app.team = body.team;
+          }
+        });
+    }
+    throw new Error('nothing matchedin the client for ' + path);
   },
   patch: function(path, body) {
     var matchesCollaborator = paths.matchesSingleCollaborator(path);
     if(matchesCollaborator) {
       return stubHerokuClient.apps(matchesCollaborator[1]).collaborators(matchesCollaborator[2]).update(body);
     }
-    return Promise.reject('nothing matched in the client');
+    var matchesTeamApp = paths.matchesTeamApp(path);
+    if(matchesTeamApp) {
+      stubHerokuClient._app.team = body.owner;
+      return Promise.resolve();
+    }
+    throw new Error('nothing matchedin the client for ' + path);
   },
   delete: function(path) {
     var matchesCollaborator = paths.matchesSingleCollaborator(path);
     if(matchesCollaborator) {
       return stubHerokuClient.apps(matchesCollaborator[1]).collaborators(matchesCollaborator[2]).delete();
     }
-    return Promise.reject('nothing matched in the client');
+    throw new Error('nothing matchedin the client for ' + path);
   },
   apps: function (app_name) {
     return {
+      params: [app_name],
       info: function () {
         if (stubHerokuClient._app && (stubHerokuClient._app.name === app_name)) {
           return Promise.resolve({
             name: stubHerokuClient._app.name,
+            team: stubHerokuClient._app.team,
             "region": {
               "name": stubHerokuClient._app.region
             },
@@ -324,18 +350,6 @@ var stubHerokuClient = {
               .map(function(buildpack) { return buildpack.buildpack; });
             return Promise.resolve();
           }
-        };
-      }
-    };
-  },
-  organizations: function () {
-    return {
-      apps: function (app_name) {
-        var apps = stubHerokuClient.apps(app_name);
-        return {
-          create: apps.create,
-          info: apps.info,
-          collaborators: apps.collaborators
         };
       }
     };
