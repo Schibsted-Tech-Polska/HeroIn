@@ -25,11 +25,11 @@
     "chai": "4.1.0",
     "dotenv": "4.0.0",
     "istanbul": "0.4.4",
-    "jshint": "2.8.0",
-    "mocha": "2.4.5"
+    "jshint": "2.10.2",
+    "mocha": "^6.2.0"
   },
   "dependencies": {
     "heroku-client": "2.4.3",
-    "lodash": "4.17.4"
+    "lodash": "4.17.15"
   }
 }
