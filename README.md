@@ -226,3 +226,13 @@ Actual values:
 - ERROR - print only error messages
 - INFO (default) - print only high level configuration steps
 - DEBUG - print everything from ERROR and INFO plus all HTTP calls to Heroku API
+
+
+Skip actions
+------
+If you want to skip certain actions, specify them in options.skipActions when creating the configurator.
+Currently only supports 'collaborators' and 'logDrains'
+
+```javascript
+var configurator = heroin(process.env.HEROKU_API_TOKEN, {skipActions: ['logDrains']});
+```
